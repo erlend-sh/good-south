@@ -4,7 +4,7 @@
 [ext_resource path="res://src/scripts/camera.gd" type="Script" id=2]
 [ext_resource path="res://environment.tres" type="Environment" id=3]
 [ext_resource path="res://assets/meshes/Gizmo.mesh" type="ArrayMesh" id=4]
-[ext_resource path="res://LayersPanel.gd" type="Script" id=5]
+[ext_resource path="res://src/scripts/LayersPanel.gd" type="Script" id=5]
 [ext_resource path="res://assets/materials/default.material" type="Material" id=6]
 [ext_resource path="res://assets/meshes/TileIndecator.tres" type="PlaneMesh" id=7]
 

@@ -9,24 +9,14 @@ var layers_group : ButtonGroup
 var layers_panel : PanelContainer
 var layers_container : VBoxContainer
 var cam : MeshInstance
+var tiles_scroll : ScrollContainer
 var cur_layer := 0
 var layers_panel_visible := true
 var sorted_layers := []
-var cur_brush = 'sand'
 var tiles = {}
-var tiles_scroll : ScrollContainer
-
 
 var layers := {
 	'layer000': {
-		'tiles': {},
-		'visibility': true
-		},
-	'layer001': {
-		'tiles': {},
-		'visibility': false
-		},
-	'layer002': {
 		'tiles': {},
 		'visibility': true
 		}
@@ -69,9 +59,8 @@ func _on_tile_toggle(pressed : bool, _tile_name : String):
 
 func _ready() -> void:
 	tiles = tileset_dir_contents('res://assets/meshes/tileset/')
-	print(tiles)
 	yield(get_tree(), 'idle_frame')
-	print('global_ready')
+	print_debug('global_ready')
 	for i in tiles.keys().size():
 		var _tile_button = tile_button.instance()
 		tiles_scroll.add_child(_tile_button)
@@ -116,7 +105,6 @@ func add_layer():
 		else:
 			child.connect('toggled', layers_panel, '_on_layer_visibility_toggled', [child])
 			child.pressed = true
-	#print(layers.keys())
 
 func del_layer():
 	var _layer_ind = layers_group.get_pressed_button().get_parent().get_index()
@@ -130,7 +118,6 @@ func del_layer():
 		_temp_layers['layer%s' % str(i).pad_zeros(3)] = layers[sorted_layers[i]]
 		layers_container.get_child(i).get_child(0).text = 'Layer %s' % i
 	layers = _temp_layers
-	print(layers)
 
 func sort_layers():
 	sorted_layers = layers.keys()

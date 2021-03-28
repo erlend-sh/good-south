@@ -9,7 +9,7 @@ onready var layers_container = get_node('VBox/Scroll/Layers') as VBoxContainer
 onready var layers_group = preload('res://src/Groups/LayersGroup.tres') as ButtonGroup
 
 func _ready() -> void:
-	print('layers_ready')
+	print_debug('layers_ready')
 	G.layers_panel = self
 	G.layers_container = layers_container
 	G.layers_group = layers_group

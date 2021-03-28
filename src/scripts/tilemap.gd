@@ -89,10 +89,10 @@ func draw_grid():
 	grid.begin(Mesh.PRIMITIVE_LINES)
 	var s = _size
 	for i in range(s + 1):
-		grid.add_vertex(Vector3(i - s/2, height * level -0.0005, -s/2))
-		grid.add_vertex(Vector3(i - s/2, height * level -0.0005,  s/2))
-		grid.add_vertex(Vector3(-s/2, height * level -0.0005, i -s/2))
-		grid.add_vertex(Vector3( s/2, height * level -0.0005, i -s/2))
+		grid.add_vertex(Vector3(i - s/2, level, -s/2))
+		grid.add_vertex(Vector3(i - s/2, level,  s/2))
+		grid.add_vertex(Vector3(-s/2, level , i -s/2))
+		grid.add_vertex(Vector3( s/2, level , i -s/2))
 	grid.end()
 	plane.translation.y = level
 	
