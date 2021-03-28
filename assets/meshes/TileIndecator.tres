@@ -1,0 +1,11 @@
+[gd_resource type="PlaneMesh" load_steps=2 format=2]
+
+[sub_resource type="SpatialMaterial" id=7]
+render_priority = 1
+flags_transparent = true
+flags_unshaded = true
+albedo_color = Color( 0.129412, 1, 0, 0.45098 )
+
+[resource]
+material = SubResource( 7 )
+size = Vector2( 1, 1 )
