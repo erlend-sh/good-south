@@ -28,14 +28,14 @@ flags_transparent = true
 flags_unshaded = true
 albedo_color = Color( 1, 1, 1, 0.0470588 )
 
-[sub_resource type="StyleBoxFlat" id=8]
+[sub_resource type="StyleBoxFlat" id=6]
 content_margin_left = 2.0
 content_margin_right = 2.0
 content_margin_top = 2.0
 content_margin_bottom = 2.0
 bg_color = Color( 0.176471, 0.176471, 0.176471, 0.176471 )
 
-[sub_resource type="ArrayMesh" id=9]
+[sub_resource type="ArrayMesh" id=7]
 blend_shape_mode = 0
 surfaces/0 = {
 "aabb": AABB( -0.00500001, -0.005, -0.00196734, 0.0108778, 0.01001, 0.00231503 ),
@@ -150,7 +150,7 @@ margin_right = 109.0
 margin_bottom = 176.0
 size_flags_horizontal = 3
 size_flags_vertical = 5
-custom_styles/panel = SubResource( 8 )
+custom_styles/panel = SubResource( 6 )
 script = ExtResource( 5 )
 
 [node name="VBox" type="VBoxContainer" parent="CanvasLayer/UI/VBox/LayersPanel"]
@@ -199,7 +199,7 @@ margin_right = 109.0
 margin_bottom = 596.0
 size_flags_horizontal = 3
 size_flags_vertical = 10
-custom_styles/panel = SubResource( 8 )
+custom_styles/panel = SubResource( 6 )
 
 [node name="Scroll" type="ScrollContainer" parent="CanvasLayer/UI/VBox/TilesPanel"]
 margin_left = 2.0
@@ -210,7 +210,7 @@ rect_min_size = Vector2( 0, 128 )
 mouse_filter = 1
 
 [node name="MeshInstance" type="MeshInstance" parent="."]
-mesh = SubResource( 9 )
+mesh = SubResource( 7 )
 material/0 = ExtResource( 6 )
 
 [connection signal="mouse_entered" from="CanvasLayer/UI/VBox/LayersPanel" to="Cam" method="_on_UI_mouse_enter_exit" binds= [ true ]]
