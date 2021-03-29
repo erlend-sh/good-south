@@ -63,6 +63,7 @@ transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, 0
 mesh = SubResource( 1 )
 material/0 = SubResource( 2 )
 script = ExtResource( 2 )
+can_draw = true
 
 [node name="3dCam" type="Camera" parent="Cam"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 15 )

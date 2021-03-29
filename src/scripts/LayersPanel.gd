@@ -32,10 +32,22 @@ func _on_layers_visibility_pressed() -> void:
 func _on_layer_toggled(pressed: bool) -> void:
 	if pressed:
 		G.cur_layer = layers_group.get_pressed_button().get_parent().get_index()
+	if G.layers['layer%s' % str(G.cur_layer).pad_zeros(3)]['visibility'] == false:
+		G.cam.can_draw = false
+	else:
+		G.cam.can_draw = true
 
 func _on_layer_visibility_toggled(pressed : bool, button : Button):
 	var _layer_name = 'layer%s' % str(button.get_parent().get_index()).pad_zeros(3)
 	G.layers[_layer_name]['visibility'] = pressed
+	var _keys = G.layers[_layer_name]['tiles'].keys()
+	for k in _keys:
+		G.layers[_layer_name]['tiles'][k][0].visible = pressed
+	print(G.cur_layer)
+	if G.layers['layer%s' % str(G.cur_layer).pad_zeros(3)]['visibility'] == false:
+		G.cam.can_draw = false
+	else:
+		G.cam.can_draw = true
 
 func _on_add_layer_pressed() -> void:
 	G.add_layer()

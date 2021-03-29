@@ -105,12 +105,22 @@ func add_layer():
 		else:
 			child.connect('toggled', layers_panel, '_on_layer_visibility_toggled', [child])
 			child.pressed = true
+	sort_layers()
 
 func del_layer():
-	var _layer_ind = layers_group.get_pressed_button().get_parent().get_index()
-	var _layer_name = 'layer%s' % str(_layer_ind).pad_zeros(3)
-	layers_container.get_child(_layer_ind).free()
+	if layers.keys().size() == 1:
+		return
+
+	var _layer_name = 'layer%s' % str(cur_layer).pad_zeros(3)
+	for key in layers[_layer_name]['tiles'].keys():
+		var _mesh = layers[_layer_name]['tiles'][key][0].free()
 # warning-ignore:return_value_discarded
+	if cur_layer == 0:
+		cur_layer = 0
+	else:
+		cur_layer = cur_layer - 1
+	layers_container.get_child(cur_layer).free()
+	layers_container.get_child(cur_layer).get_child(0).pressed = true
 	layers.erase(_layer_name)
 	sort_layers()
 	var _temp_layers = {}
@@ -118,6 +128,16 @@ func del_layer():
 		_temp_layers['layer%s' % str(i).pad_zeros(3)] = layers[sorted_layers[i]]
 		layers_container.get_child(i).get_child(0).text = 'Layer %s' % i
 	layers = _temp_layers
+	sort_layers()
+	if cam.has_backup:
+		for i in cam.tiles_backup.size():
+			if !cam.tiles_backup[i] == null:
+				cam.tiles_backup[i].free()
+				cam.tiles_backup[i] = null
+		for key in cam.tiles_to_set.keys():
+			cam.tiles_to_set[key][cam.CUR_TILE_NODE].free()
+		cam.tiles_to_set = {}
+		cam.has_backup = false
 
 func sort_layers():
 	sorted_layers = layers.keys()

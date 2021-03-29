@@ -19,6 +19,7 @@ onready var gizmo_cam = get_node('../CanvasLayer/UI/Viewport/Viewport/Cam') as S
 onready var tile_label = get_node('../CanvasLayer/UI/VBox/Tile') as Label
 
 
+export(bool) var can_draw = false
 var is_drawing = false
 var is_erasing = false
 var _trans := translation
@@ -205,7 +206,7 @@ func _input(event: InputEvent) -> void:
 			if event.button_index == BUTTON_WHEEL_DOWN && cam.translation.z < 40:
 				cam.translation.z += 1
 		
-		if event.button_index == BUTTON_LEFT:
+		if event.button_index == BUTTON_LEFT && can_draw:
 			if event.is_pressed():
 				if !is_rotating && !is_panning && tile_indecator.visible == true:
 					is_drawing = true
@@ -213,7 +214,7 @@ func _input(event: InputEvent) -> void:
 			else:
 				is_drawing = false
 		
-		if event.button_index == BUTTON_RIGHT:
+		if event.button_index == BUTTON_RIGHT && can_draw:
 			if event.is_pressed():
 				if !is_rotating && !is_panning && tile_indecator.visible == true:
 					is_erasing = true
@@ -257,227 +258,227 @@ func _input(event: InputEvent) -> void:
 			_rot.x = clamp(_rot.x, -90 - cam.rotation_degrees.x, 0 - cam.rotation_degrees.x)
 
 func _physics_process(delta: float) -> void:
-		var mouse = get_viewport().get_mouse_position()
-		var from = cam.project_ray_origin(mouse)
-		var to = from + cam.project_ray_normal(mouse) * ray_length
-		ray.cast_to = to
-		ray.translation = from
-		if ray.is_colliding() && (!is_rotating && !is_panning):
-			var pos = ray.get_collision_point().floor()
-			pos.y = tilemap.level
-			pos.x += 0.5
-			pos.z += 0.5
-			tile_indecator.show()
-			tile_indecator.translation = pos
-			tile_pos = pos + Vector3(tilemap._size/2 - 0.5, 0, tilemap._size/2 - 0.5)
-			tile_label.text = 'Tile %s' % tile_pos
-		else:
-			tile_indecator.hide()
-			tile_label.text = 'Tile Null'
-		if !translation.is_equal_approx(_trans):
-			translation = translation.linear_interpolate(_trans, delta * 20)
-		if !rotation_degrees.is_equal_approx(_rot):
-			rotation_degrees = rotation_degrees.linear_interpolate(_rot, delta * 20)
-			gizmo_cam.rotation_degrees = rotation_degrees
-		if cur_pos != tile_pos: #move
-			if cur_tile_name != '':
-				if has_backup:
-					for i in tiles_backup.size():
-						if !tiles_backup[i] == null:
-							tiles_backup[i].show()
-							tiles_backup[i] = null
-					for key in tiles_to_set.keys():
-						tiles_to_set[key][CUR_TILE_NODE].free()
-					tiles_to_set = {}
-					has_backup = false
-				if has_tile(tile_pos):
-					tile_indecator.mesh = G.plane_tile
-				if !has_same_tile(tile_pos):
-					#left, forwad, right, back
-					var neighbors := [false, false, false, false]
-					var neighs_of_neighs := [
-						[false, false, false, false],
-						[false, false, false, false],
-						[false, false, false, false],
-						[false, false, false, false]
-					]
-					for i in _dirs.size():
-						if has_same_tile(tile_pos + _dirs[i]):
-							neighbors[i] = true
-					if neighbors.has(true):
-						has_backup = true
-						for i in neighbors.size():
-							match neighbors:
+	var mouse = get_viewport().get_mouse_position()
+	var from = cam.project_ray_origin(mouse)
+	var to = from + cam.project_ray_normal(mouse) * ray_length
+	ray.cast_to = to
+	ray.translation = from
+	if ray.is_colliding() && (!is_rotating && !is_panning):
+		var pos = ray.get_collision_point().floor()
+		pos.y = tilemap.level
+		pos.x += 0.5
+		pos.z += 0.5
+		tile_indecator.show()
+		tile_indecator.translation = pos
+		tile_pos = pos + Vector3(tilemap._size/2 - 0.5, 0, tilemap._size/2 - 0.5)
+		tile_label.text = 'Tile %s' % tile_pos
+	else:
+		tile_indecator.hide()
+		tile_label.text = 'Tile Null'
+	if !translation.is_equal_approx(_trans):
+		translation = translation.linear_interpolate(_trans, delta * 20)
+	if !rotation_degrees.is_equal_approx(_rot):
+		rotation_degrees = rotation_degrees.linear_interpolate(_rot, delta * 20)
+		gizmo_cam.rotation_degrees = rotation_degrees
+	if cur_pos != tile_pos: #move
+		if cur_tile_name != '' && can_draw:
+			if has_backup:
+				for i in tiles_backup.size():
+					if !tiles_backup[i] == null:
+						tiles_backup[i].show()
+						tiles_backup[i] = null
+				for key in tiles_to_set.keys():
+					tiles_to_set[key][CUR_TILE_NODE].free()
+				tiles_to_set = {}
+				has_backup = false
+			if has_tile(tile_pos):
+				tile_indecator.mesh = G.plane_tile
+			if !has_same_tile(tile_pos):
+				#left, forwad, right, back
+				var neighbors := [false, false, false, false]
+				var neighs_of_neighs := [
+					[false, false, false, false],
+					[false, false, false, false],
+					[false, false, false, false],
+					[false, false, false, false]
+				]
+				for i in _dirs.size():
+					if has_same_tile(tile_pos + _dirs[i]):
+						neighbors[i] = true
+				if neighbors.has(true):
+					has_backup = true
+					for i in neighbors.size():
+						match neighbors:
+							# case one
+							[true, false, false, false]: # has left neigh
+								tile_indecator.mesh = G.tiles[cur_tile_name]['solo_edge']
+								tile_indecator.rotation_degrees.y = 0
+								cur_tile = 'solo_edge'
+							[false, true, false, false]: # has forward neigh
+								tile_indecator.mesh = G.tiles[cur_tile_name]['solo_edge']
+								tile_indecator.rotation_degrees.y = -90
+								cur_tile = 'solo_edge'
+							[false, false, true, false]: # has right neigh 
+								tile_indecator.mesh = G.tiles[cur_tile_name]['solo_edge']
+								tile_indecator.rotation_degrees.y = 180
+								cur_tile = 'solo_edge'
+							[false, false, false, true]: # has back neigh
+								tile_indecator.mesh = G.tiles[cur_tile_name]['solo_edge']
+								tile_indecator.rotation_degrees.y = 90
+								cur_tile = 'solo_edge'
+							# case two
+							[true, true, false, false]: # has left and forward neighs
+								tile_indecator.mesh = G.tiles[cur_tile_name]['corner']
+								tile_indecator.rotation_degrees.y = 0
+								cur_tile = 'corner'
+							[true, false, true, false]: # has left and right neighs
+								tile_indecator.mesh = G.tiles[cur_tile_name]['solo_middle']
+								tile_indecator.rotation_degrees.y = 0
+								cur_tile = 'solo_middle'
+							[true, false, false, true]: # has left and back neighs
+								tile_indecator.mesh = G.tiles[cur_tile_name]['corner']
+								tile_indecator.rotation_degrees.y = 90
+								cur_tile = 'corner'
+							[false, true, true, false]: # has forward and right neighs
+								tile_indecator.mesh = G.tiles[cur_tile_name]['corner']
+								tile_indecator.rotation_degrees.y = -90
+								cur_tile = 'corner'
+							[false, true, false, true]: # has forward and back neighs
+								tile_indecator.mesh = G.tiles[cur_tile_name]['solo_middle']
+								tile_indecator.rotation_degrees.y = 90
+								cur_tile = 'solo_middle'
+							[false, false, true, true]: # has right and back neighs
+								tile_indecator.mesh = G.tiles[cur_tile_name]['corner']
+								tile_indecator.rotation_degrees.y = 180
+								cur_tile = 'corner'
+							# case three
+							[true, true, true, false]: # has left, right and forward neighs
+								tile_indecator.mesh = G.tiles[cur_tile_name]['edge']
+								tile_indecator.rotation_degrees.y = -90
+								cur_tile = 'edge'
+							[false, true, true, true]: # has forward, right and back neighs
+								tile_indecator.mesh = G.tiles[cur_tile_name]['edge']
+								tile_indecator.rotation_degrees.y = 180
+								cur_tile = 'edge'
+							[true, false, true, true]: # has left, right and back neighs
+								tile_indecator.mesh = G.tiles[cur_tile_name]['edge']
+								tile_indecator.rotation_degrees.y = 90
+								cur_tile = 'edge'
+							[true, true, false, true]: # has left, forward and back neighs
+								tile_indecator.mesh = G.tiles[cur_tile_name]['edge']
+								tile_indecator.rotation_degrees.y = 0
+								cur_tile = 'edge'
+							# case four
+							[true, true, true, true]: # has all neighs
+								tile_indecator.mesh = G.tiles[cur_tile_name]['middle']
+								tile_indecator.rotation_degrees.y = 0
+								cur_tile = 'middle'
+							_:
+								print_debug('something else !')
+								pass
+	
+
+						if neighbors[i]:
+							for j in _dirs.size():
+								if tile_pos + _dirs[i] + _dirs[j] == tile_pos:
+									neighs_of_neighs[i][j] = true
+									continue
+								if has_same_tile(tile_pos + _dirs[i] + _dirs[j]):
+									neighs_of_neighs[i][j] = true
+							var _tile_name = ''
+							tiles_backup[i] = get_tiles()[tile_pos + _dirs[i]][CUR_TILE_NODE]
+							tiles_backup[i].hide()
+							var _tile = MeshInstance.new()
+							tilemap.add_child(_tile)
+							_tile.translation = tiles_backup[i].translation
+							
+							match neighs_of_neighs[i]:
 								# case one
 								[true, false, false, false]: # has left neigh
-									tile_indecator.mesh = G.tiles[cur_tile_name]['solo_edge']
-									tile_indecator.rotation_degrees.y = 0
-									cur_tile = 'solo_edge'
+									_tile.mesh = G.tiles[cur_tile_name]['solo_edge']
+									_tile.rotation_degrees.y = 0
+									_tile_name = 'solo_edge'
 								[false, true, false, false]: # has forward neigh
-									tile_indecator.mesh = G.tiles[cur_tile_name]['solo_edge']
-									tile_indecator.rotation_degrees.y = -90
-									cur_tile = 'solo_edge'
+									_tile.mesh = G.tiles[cur_tile_name]['solo_edge']
+									_tile.rotation_degrees.y = -90
+									_tile_name = 'solo_edge'
 								[false, false, true, false]: # has right neigh 
-									tile_indecator.mesh = G.tiles[cur_tile_name]['solo_edge']
-									tile_indecator.rotation_degrees.y = 180
-									cur_tile = 'solo_edge'
+									_tile.mesh = G.tiles[cur_tile_name]['solo_edge']
+									_tile.rotation_degrees.y = 180
+									_tile_name = 'solo_edge'
 								[false, false, false, true]: # has back neigh
-									tile_indecator.mesh = G.tiles[cur_tile_name]['solo_edge']
-									tile_indecator.rotation_degrees.y = 90
-									cur_tile = 'solo_edge'
+									_tile.mesh = G.tiles[cur_tile_name]['solo_edge']
+									_tile.rotation_degrees.y = 90
+									_tile_name = 'solo_edge'
 								# case two
 								[true, true, false, false]: # has left and forward neighs
-									tile_indecator.mesh = G.tiles[cur_tile_name]['corner']
-									tile_indecator.rotation_degrees.y = 0
-									cur_tile = 'corner'
+									_tile.mesh = G.tiles[cur_tile_name]['corner']
+									_tile.rotation_degrees.y = 0
+									_tile_name = 'corner'
 								[true, false, true, false]: # has left and right neighs
-									tile_indecator.mesh = G.tiles[cur_tile_name]['solo_middle']
-									tile_indecator.rotation_degrees.y = 0
-									cur_tile = 'solo_middle'
+									_tile.mesh = G.tiles[cur_tile_name]['solo_middle']
+									_tile.rotation_degrees.y = 0
+									_tile_name = 'solo_middle'
 								[true, false, false, true]: # has left and back neighs
-									tile_indecator.mesh = G.tiles[cur_tile_name]['corner']
-									tile_indecator.rotation_degrees.y = 90
-									cur_tile = 'corner'
+									_tile.mesh = G.tiles[cur_tile_name]['corner']
+									_tile.rotation_degrees.y = 90
+									_tile_name = 'corner'
 								[false, true, true, false]: # has forward and right neighs
-									tile_indecator.mesh = G.tiles[cur_tile_name]['corner']
-									tile_indecator.rotation_degrees.y = -90
-									cur_tile = 'corner'
+									_tile.mesh = G.tiles[cur_tile_name]['corner']
+									_tile.rotation_degrees.y = -90
+									_tile_name = 'corner'
 								[false, true, false, true]: # has forward and back neighs
-									tile_indecator.mesh = G.tiles[cur_tile_name]['solo_middle']
-									tile_indecator.rotation_degrees.y = 90
-									cur_tile = 'solo_middle'
+									_tile.mesh = G.tiles[cur_tile_name]['solo_middle']
+									_tile.rotation_degrees.y = 90
+									_tile_name = 'solo_middle'
 								[false, false, true, true]: # has right and back neighs
-									tile_indecator.mesh = G.tiles[cur_tile_name]['corner']
-									tile_indecator.rotation_degrees.y = 180
-									cur_tile = 'corner'
+									_tile.mesh = G.tiles[cur_tile_name]['corner']
+									_tile.rotation_degrees.y = 180
+									_tile_name = 'corner'
 								# case three
 								[true, true, true, false]: # has left, right and forward neighs
-									tile_indecator.mesh = G.tiles[cur_tile_name]['edge']
-									tile_indecator.rotation_degrees.y = -90
-									cur_tile = 'edge'
+									_tile.mesh = G.tiles[cur_tile_name]['edge']
+									_tile.rotation_degrees.y = -90
+									_tile_name = 'edge'
 								[false, true, true, true]: # has forward, right and back neighs
-									tile_indecator.mesh = G.tiles[cur_tile_name]['edge']
-									tile_indecator.rotation_degrees.y = 180
-									cur_tile = 'edge'
+									_tile.mesh = G.tiles[cur_tile_name]['edge']
+									_tile.rotation_degrees.y = 180
+									_tile_name = 'edge'
 								[true, false, true, true]: # has left, right and back neighs
-									tile_indecator.mesh = G.tiles[cur_tile_name]['edge']
-									tile_indecator.rotation_degrees.y = 90
-									cur_tile = 'edge'
+									_tile.mesh = G.tiles[cur_tile_name]['edge']
+									_tile.rotation_degrees.y = 90
+									_tile_name = 'edge'
 								[true, true, false, true]: # has left, forward and back neighs
-									tile_indecator.mesh = G.tiles[cur_tile_name]['edge']
-									tile_indecator.rotation_degrees.y = 0
-									cur_tile = 'edge'
+									_tile.mesh = G.tiles[cur_tile_name]['edge']
+									_tile.rotation_degrees.y = 0
+									_tile_name = 'edge'
 								# case four
 								[true, true, true, true]: # has all neighs
-									tile_indecator.mesh = G.tiles[cur_tile_name]['middle']
-									tile_indecator.rotation_degrees.y = 0
-									cur_tile = 'middle'
+									_tile.mesh = G.tiles[cur_tile_name]['middle']
+									_tile.rotation_degrees.y = 0
+									_tile_name = 'middle'
 								_:
 									print_debug('something else !')
 									pass
-		
-
-							if neighbors[i]:
-								for j in _dirs.size():
-									if tile_pos + _dirs[i] + _dirs[j] == tile_pos:
-										neighs_of_neighs[i][j] = true
-										continue
-									if has_same_tile(tile_pos + _dirs[i] + _dirs[j]):
-										neighs_of_neighs[i][j] = true
-								var _tile_name = ''
-								tiles_backup[i] = get_tiles()[tile_pos + _dirs[i]][CUR_TILE_NODE]
-								tiles_backup[i].hide()
-								var _tile = MeshInstance.new()
-								tilemap.add_child(_tile)
-								_tile.translation = tiles_backup[i].translation
-								
-								match neighs_of_neighs[i]:
-									# case one
-									[true, false, false, false]: # has left neigh
-										_tile.mesh = G.tiles[cur_tile_name]['solo_edge']
-										_tile.rotation_degrees.y = 0
-										_tile_name = 'solo_edge'
-									[false, true, false, false]: # has forward neigh
-										_tile.mesh = G.tiles[cur_tile_name]['solo_edge']
-										_tile.rotation_degrees.y = -90
-										_tile_name = 'solo_edge'
-									[false, false, true, false]: # has right neigh 
-										_tile.mesh = G.tiles[cur_tile_name]['solo_edge']
-										_tile.rotation_degrees.y = 180
-										_tile_name = 'solo_edge'
-									[false, false, false, true]: # has back neigh
-										_tile.mesh = G.tiles[cur_tile_name]['solo_edge']
-										_tile.rotation_degrees.y = 90
-										_tile_name = 'solo_edge'
-									# case two
-									[true, true, false, false]: # has left and forward neighs
-										_tile.mesh = G.tiles[cur_tile_name]['corner']
-										_tile.rotation_degrees.y = 0
-										_tile_name = 'corner'
-									[true, false, true, false]: # has left and right neighs
-										_tile.mesh = G.tiles[cur_tile_name]['solo_middle']
-										_tile.rotation_degrees.y = 0
-										_tile_name = 'solo_middle'
-									[true, false, false, true]: # has left and back neighs
-										_tile.mesh = G.tiles[cur_tile_name]['corner']
-										_tile.rotation_degrees.y = 90
-										_tile_name = 'corner'
-									[false, true, true, false]: # has forward and right neighs
-										_tile.mesh = G.tiles[cur_tile_name]['corner']
-										_tile.rotation_degrees.y = -90
-										_tile_name = 'corner'
-									[false, true, false, true]: # has forward and back neighs
-										_tile.mesh = G.tiles[cur_tile_name]['solo_middle']
-										_tile.rotation_degrees.y = 90
-										_tile_name = 'solo_middle'
-									[false, false, true, true]: # has right and back neighs
-										_tile.mesh = G.tiles[cur_tile_name]['corner']
-										_tile.rotation_degrees.y = 180
-										_tile_name = 'corner'
-									# case three
-									[true, true, true, false]: # has left, right and forward neighs
-										_tile.mesh = G.tiles[cur_tile_name]['edge']
-										_tile.rotation_degrees.y = -90
-										_tile_name = 'edge'
-									[false, true, true, true]: # has forward, right and back neighs
-										_tile.mesh = G.tiles[cur_tile_name]['edge']
-										_tile.rotation_degrees.y = 180
-										_tile_name = 'edge'
-									[true, false, true, true]: # has left, right and back neighs
-										_tile.mesh = G.tiles[cur_tile_name]['edge']
-										_tile.rotation_degrees.y = 90
-										_tile_name = 'edge'
-									[true, true, false, true]: # has left, forward and back neighs
-										_tile.mesh = G.tiles[cur_tile_name]['edge']
-										_tile.rotation_degrees.y = 0
-										_tile_name = 'edge'
-									# case four
-									[true, true, true, true]: # has all neighs
-										_tile.mesh = G.tiles[cur_tile_name]['middle']
-										_tile.rotation_degrees.y = 0
-										_tile_name = 'middle'
-									_:
-										print_debug('something else !')
-										pass
-								tiles_to_set[tile_pos + _dirs[i]] = [
-									_tile,
-									cur_tile_name,
-									_tile_name,
-									_tile.rotation_degrees
-								]
-					else:
-						tile_indecator.mesh = G.tiles[cur_tile_name]['solo']
-						tile_indecator.rotation_degrees.y = 0
-						cur_tile = 'solo'
-				else: # has same tile
-					print_debug('same_tile')
-					pass
-			if is_drawing:
-				draw_tile()
-			if is_erasing:
-				remove_tile()
-				tile_indecator.mesh = G.plane_tile
-			cur_pos = tile_pos
+							tiles_to_set[tile_pos + _dirs[i]] = [
+								_tile,
+								cur_tile_name,
+								_tile_name,
+								_tile.rotation_degrees
+							]
+				else:
+					tile_indecator.mesh = G.tiles[cur_tile_name]['solo']
+					tile_indecator.rotation_degrees.y = 0
+					cur_tile = 'solo'
+			else: # has same tile
+				#print_debug('same_tile 0')
+				pass
+		if is_drawing:
+			draw_tile()
+		if is_erasing:
+			remove_tile()
+			tile_indecator.mesh = G.plane_tile
+		cur_pos = tile_pos
 
 
 func _on_UI_mouse_enter_exit(entered: bool) -> void:
