@@ -1,9 +1,17 @@
 extends Node
 
+const CORNER = 0
+const EDGE = 1
+const MIDDLE = 2
+const SOLO = 3
+const SOLO_EDGE = 4
+const SOLO_MIDDLE = 5
 
 onready var layer = preload('res://assets/scenes/Packed/Layer.tscn')
 onready var tile_button = preload('res://assets/scenes/Packed/TileButton.tscn')
 onready var plane_tile = preload('res://assets/meshes/TileIndecator.tres')
+
+onready var tiles_scene = preload('res://assets/scenes/Packed/Tiles.tscn').instance()
 
 var layers_group : ButtonGroup
 var layers_panel : PanelContainer
@@ -14,6 +22,7 @@ var cur_layer := 0
 var layers_panel_visible := true
 var sorted_layers := []
 var tiles = {}
+var cur_tile_name := ''
 
 var layers := {
 	'layer000': {
@@ -22,44 +31,33 @@ var layers := {
 		}
 	}
 
-func tileset_dir_contents(path) -> Dictionary:
-	var _sets := {}
-	var files := []
-	var dir = Directory.new()
-	dir.open(path)
-	dir.list_dir_begin()
-	while true:
-		var file = dir.get_next()
-		if file == "":
-			break
-		elif !file.begins_with("."):
-			files.append(file)
-	dir.list_dir_end()
-	for _str in files:
-		var _path = path + _str
-		dir.open(_path)
-		dir.list_dir_begin()
-		while true:
-			var file = dir.get_next()
-			if file == "":
-				break
-			elif !file.begins_with("."):
-				var n = file.replace('.mesh', '')
-				if !_sets.has(_str):
-					_sets[_str] = {}
-				_sets[_str][n] = load(path + _str + '/' + file)
-		dir.list_dir_end()
-	return _sets
+	# {'sand': [solo, corner, ...]}
+func import_tiles(_scene : Spatial):
+	var _tileset := {}
+	for _child in _scene.get_children():
+		if _child.get_index() == 0:
+			cur_tile_name = _child.name
+		var _mesh := []
+		if _child.get_child_count() > 0:
+			for _sub in _child.get_children():
+				_mesh.append(_sub)
+				print(_sub.name)
+		tiles[_child.name] = _mesh
+
 
 func _on_tile_toggle(pressed : bool, _tile_name : String):
+	if cam == null:
+		print_debug('cam == Null')
+		return
 	if pressed:
-		cam.cur_tile_name = _tile_name
-		cam.cur_tile = 'solo'
-		cam.tile_indecator.mesh = tiles[_tile_name]['solo']
+		G.cur_tile_name = _tile_name
+		#cam.tile_ind.mesh = tiles[_tile_name][SOLO].mesh
 
 func _ready() -> void:
-	tiles = tileset_dir_contents('res://assets/meshes/tileset/')
+	import_tiles(tiles_scene)
+	print(tiles)
 	yield(get_tree(), 'idle_frame')
+	cam.update_ind(cur_layer)
 	print_debug('global_ready')
 	for i in tiles.keys().size():
 		var _tile_button = tile_button.instance()
@@ -107,10 +105,9 @@ func add_layer():
 			child.pressed = true
 	sort_layers()
 
-func del_layer():
+func del_layer(): # NEEEEEEEEDS Fix 
 	if layers.keys().size() == 1:
 		return
-
 	var _layer_name = 'layer%s' % str(cur_layer).pad_zeros(3)
 	for key in layers[_layer_name]['tiles'].keys():
 		var _mesh = layers[_layer_name]['tiles'][key][0].free()
@@ -121,6 +118,10 @@ func del_layer():
 		cur_layer = cur_layer - 1
 	layers_container.get_child(cur_layer).free()
 	layers_container.get_child(cur_layer).get_child(0).pressed = true
+	if !layers_container.get_child(cur_layer).get_child(1).is_pressed():
+		cam.can_draw = false
+		layers_container.get_child(cur_layer).get_child(1).pressed = false
+		print('hidden')
 	layers.erase(_layer_name)
 	sort_layers()
 	var _temp_layers = {}

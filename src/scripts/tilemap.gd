@@ -73,7 +73,7 @@ func draw_axes() -> void:
 		axes.add_child(cur_ax, true)
 
 func _ready():
-	plane.scale = Vector3(float(_size)/2, 1, float(_size)/2)
+	plane.scale = Vector3(float(_size)/2 - 0.01, 1, float(_size)/2 - 0.01)
 	add_child(grid)
 	grid.name = 'Grid'
 	grid.set_material_override(mat)

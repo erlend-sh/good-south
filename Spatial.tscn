@@ -1,11 +1,10 @@
-[gd_scene load_steps=15 format=2]
+[gd_scene load_steps=13 format=2]
 
 [ext_resource path="res://src/scripts/tilemap.gd" type="Script" id=1]
 [ext_resource path="res://src/scripts/camera.gd" type="Script" id=2]
 [ext_resource path="res://environment.tres" type="Environment" id=3]
 [ext_resource path="res://assets/meshes/Gizmo.mesh" type="ArrayMesh" id=4]
 [ext_resource path="res://src/scripts/LayersPanel.gd" type="Script" id=5]
-[ext_resource path="res://assets/materials/default.material" type="Material" id=6]
 [ext_resource path="res://assets/meshes/TileIndecator.tres" type="PlaneMesh" id=7]
 
 [sub_resource type="SphereMesh" id=1]
@@ -35,22 +34,6 @@ content_margin_top = 2.0
 content_margin_bottom = 2.0
 bg_color = Color( 0.176471, 0.176471, 0.176471, 0.176471 )
 
-[sub_resource type="ArrayMesh" id=7]
-blend_shape_mode = 0
-surfaces/0 = {
-"aabb": AABB( -0.00500001, -0.005, -0.00196734, 0.0108778, 0.01001, 0.00231503 ),
-"array_data": PoolByteArray( 251, 214, 163, 187, 30, 215, 163, 59, 146, 11, 177, 57, 0, 0, 127, 0, 127, 0, 0, 129, 139, 59, 96, 56, 242, 214, 163, 59, 14, 215, 163, 187, 146, 11, 177, 57, 0, 0, 127, 0, 127, 0, 0, 129, 157, 59, 75, 56, 34, 215, 163, 187, 242, 214, 163, 187, 146, 11, 177, 57, 0, 0, 127, 0, 127, 0, 0, 129, 139, 59, 75, 56, 242, 214, 163, 59, 14, 215, 163, 187, 146, 11, 177, 57, 0, 0, 127, 0, 127, 0, 0, 129, 157, 59, 75, 56, 251, 214, 163, 187, 30, 215, 163, 59, 146, 11, 177, 57, 0, 0, 127, 0, 127, 0, 0, 129, 139, 59, 96, 56, 34, 215, 163, 59, 242, 214, 163, 59, 146, 11, 177, 57, 0, 0, 127, 0, 127, 0, 0, 129, 157, 59, 96, 56, 132, 35, 183, 59, 28, 215, 163, 59, 124, 147, 16, 186, 105, 0, 70, 0, 70, 0, 151, 129, 160, 59, 96, 56, 242, 214, 163, 59, 14, 215, 163, 187, 146, 11, 177, 57, 105, 0, 70, 0, 70, 0, 151, 129, 157, 59, 75, 56, 34, 215, 163, 59, 242, 214, 163, 59, 146, 11, 177, 57, 105, 0, 70, 0, 70, 0, 151, 129, 157, 59, 96, 56, 242, 214, 163, 59, 14, 215, 163, 187, 146, 11, 177, 57, 105, 0, 70, 0, 70, 0, 151, 129, 157, 59, 75, 56, 132, 35, 183, 59, 28, 215, 163, 59, 124, 147, 16, 186, 105, 0, 70, 0, 70, 0, 151, 129, 160, 59, 96, 56, 117, 35, 183, 59, 19, 215, 163, 187, 124, 147, 16, 186, 105, 0, 70, 0, 70, 0, 151, 129, 160, 59, 75, 56, 121, 154, 192, 59, 28, 215, 163, 59, 137, 238, 0, 187, 124, 0, 25, 0, 231, 0, 124, 129, 132, 59, 56, 56, 117, 35, 183, 59, 19, 215, 163, 187, 124, 147, 16, 186, 124, 0, 25, 0, 231, 0, 124, 129, 138, 59, 101, 56, 132, 35, 183, 59, 28, 215, 163, 59, 124, 147, 16, 186, 124, 0, 25, 0, 231, 0, 124, 129, 138, 59, 56, 56, 117, 35, 183, 59, 19, 215, 163, 187, 124, 147, 16, 186, 124, 0, 25, 0, 231, 0, 124, 129, 138, 59, 101, 56, 121, 154, 192, 59, 28, 215, 163, 59, 137, 238, 0, 187, 124, 0, 25, 0, 231, 0, 124, 129, 132, 59, 56, 56, 109, 154, 192, 59, 15, 215, 163, 187, 137, 238, 0, 187, 124, 0, 25, 0, 231, 0, 124, 129, 132, 59, 101, 56 ),
-"array_index_data": PoolByteArray( 0, 0, 1, 0, 2, 0, 3, 0, 4, 0, 5, 0, 6, 0, 7, 0, 8, 0, 9, 0, 10, 0, 11, 0, 12, 0, 13, 0, 14, 0, 15, 0, 16, 0, 17, 0 ),
-"blend_shape_data": [  ],
-"format": 97559,
-"index_count": 18,
-"material": ExtResource( 6 ),
-"name": "Material",
-"primitive": 4,
-"skeleton_aabb": [  ],
-"vertex_count": 18
-}
-
 [node name="Spatial" type="Spatial"]
 pause_mode = 2
 
@@ -63,7 +46,6 @@ transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, 0
 mesh = SubResource( 1 )
 material/0 = SubResource( 2 )
 script = ExtResource( 2 )
-can_draw = true
 
 [node name="3dCam" type="Camera" parent="Cam"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 15 )
@@ -72,14 +54,14 @@ environment = ExtResource( 3 )
 current = true
 far = 1024.0
 
-[node name="DirectionalLight" type="DirectionalLight" parent="."]
-transform = Transform( 0.433013, 0.866025, 0.25, -0.5, -2.2954e-08, 0.866025, 0.75, -0.5, 0.433013, 0, 7.0439, 0 )
-
 [node name="RayCast" type="RayCast" parent="."]
 enabled = true
 
+[node name="DirectionalLight" type="DirectionalLight" parent="."]
+transform = Transform( 0.433013, 0.866025, 0.25, -0.5, -2.2954e-08, 0.866025, 0.75, -0.5, 0.433013, 0, 7.0439, 0 )
+
 [node name="Plane" type="StaticBody" parent="."]
-transform = Transform( 12, 0, 0, 0, 1, 0, 0, 0, 12, 0, 0, 0 )
+transform = Transform( 11.99, 0, 0, 0, 1, 0, 0, 0, 11.99, 0, 0, 0 )
 
 [node name="Coll" type="CollisionShape" parent="Plane"]
 shape = SubResource( 3 )
@@ -209,10 +191,6 @@ margin_right = 107.0
 margin_bottom = 130.0
 rect_min_size = Vector2( 0, 128 )
 mouse_filter = 1
-
-[node name="MeshInstance" type="MeshInstance" parent="."]
-mesh = SubResource( 7 )
-material/0 = ExtResource( 6 )
 
 [connection signal="mouse_entered" from="CanvasLayer/UI/VBox/LayersPanel" to="Cam" method="_on_UI_mouse_enter_exit" binds= [ true ]]
 [connection signal="mouse_exited" from="CanvasLayer/UI/VBox/LayersPanel" to="Cam" method="_on_UI_mouse_enter_exit" binds= [ false ]]
