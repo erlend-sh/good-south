@@ -41,7 +41,6 @@ func _on_layer_visibility_toggled(pressed : bool, button : Button):
 	var _keys = G.layers[_layer_name]['tiles'].keys()
 	for k in _keys:
 		G.layers[_layer_name]['tiles'][k][0].visible = pressed
-	print(G.cur_layer)
 	if G.layers['layer%s' % str(G.cur_layer).pad_zeros(3)]['visibility'] == false:
 		G.cam.can_draw = false if G.cam != null else true
 

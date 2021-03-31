@@ -62,11 +62,7 @@ func has_same_tile(_tile_pos1 : Vector3, _tile_pos2 : Vector3, _layer : int) -> 
 func draw_tile(_tile_pos : Vector3, _layer : int, inc_ind := false):
 	if has_tile(_tile_pos, _layer):
 		if get_tiles(_layer)[_tile_pos][TILE_NAME] == G.cur_tile_name:
-			print_debug('same_tile')
-#			if has_backup:
-#				backup_restore()
 			return
-	print('draw')
 	var _tiles = get_tiles(_layer)
 	var _data = get_tile_data(get_neighs(_tile_pos, _layer, G.cur_tile_name, inc_ind), G.cur_tile_name)
 	tilemap.add_child(_data[CUR_TILE_NODE])
@@ -311,21 +307,6 @@ func backup(_inc_ind := false):
 			_tiles[_neigh][CUR_TILE_NODE].rotation_degrees.y = _data[CUR_TILE_ROT]
 	if tiles_backup.keys().size() > 0:
 		has_backup = true
-		
-#		if has_tile(_neigh, G.cur_layer):
-#			if _tiles[_neigh][TILE_NAME] == G.cur_tile_name:
-#				var _neighs = get_neighs(_neigh, G.cur_layer, G.cur_tile_name, true)
-#				var _data = get_tile_data(_neighs , G.cur_tile_name)
-#				tiles_backup[_neigh] = _data
-#				var _cur_tile = _tiles[_neigh][CUR_TILE_NODE]
-#				_cur_tile.hide()
-#				hidden_tiles.append(_cur_tile)
-#				var _backup_tile = _data[CUR_TILE_NODE].duplicate()
-#				tilemap.add_child(_backup_tile)
-#				_backup_tile.rotation_degrees.y = _data[CUR_TILE_ROT]
-#				_backup_tile.translation = _cur_tile.translation
-#	if hidden_tiles.size() > 0:
-#		has_backup = true
 
 #cleans the backup 
 func clean_backup():
@@ -338,7 +319,6 @@ func clean_backup():
 
 func restore_backup():
 	if has_backup:
-		print('restore')
 		var _tiles = get_tiles(G.cur_layer)
 		for _key in tiles_backup.keys():
 			erase_tile(_key, G.cur_layer)
@@ -347,9 +327,7 @@ func restore_backup():
 		has_backup = false
 
 func _on_tile_mouse_enter() -> void:
-	print(get_tile_pos(tile_pos))
 	cur_ind_pos = tile_ind.translation
-	
 	if is_draw:
 		restore_backup()
 		update_ind(G.cur_layer)
@@ -366,11 +344,7 @@ func _on_tile_mouse_enter() -> void:
 		update_ind(G.cur_layer)
 		restore_backup()
 		backup(true)
-#		backup(true)
 	last_ind_pos = tile_ind.translation
-		
-		
-
 
 func _process(delta: float) -> void:
 	if is_motion:
