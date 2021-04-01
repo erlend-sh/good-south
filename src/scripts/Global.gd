@@ -17,7 +17,7 @@ var layers_group : ButtonGroup
 var layers_panel : PanelContainer
 var layers_container : VBoxContainer
 var cam : MeshInstance
-var tiles_scroll : ScrollContainer
+var tiles_scroll : VBoxContainer
 var cur_layer := 0
 var layers_panel_visible := true
 var sorted_layers := []
@@ -33,32 +33,18 @@ var layers := {
 
 	# {'sand': [solo, corner, ...]}
 func import_tiles(_scene : Spatial):
-	var _tileset := {}
 	for _child in _scene.get_children():
 		if _child.get_index() == 0:
 			cur_tile_name = _child.name
-		var _mesh := []
 		if _child.get_child_count() > 0:
+			var _node := []
 			for _sub in _child.get_children():
-				_mesh.append(_sub)
-				print(_sub.name)
-		tiles[_child.name] = _mesh
+				_node.append(_sub)
+				print(_child.name)
+			tiles[_child.name] = _node
 
 
-func _on_tile_toggle(pressed : bool, _tile_name : String):
-	if cam == null:
-		print_debug('cam == Null')
-		return
-	if pressed:
-		G.cur_tile_name = _tile_name
-		#cam.tile_ind.mesh = tiles[_tile_name][SOLO].mesh
-
-func _ready() -> void:
-	import_tiles(tiles_scene)
-	print(tiles)
-	yield(get_tree(), 'idle_frame')
-	cam.update_ind(cur_layer)
-	print_debug('global_ready')
+func update_tiles():
 	for i in tiles.keys().size():
 		var _tile_button = tile_button.instance()
 		tiles_scroll.add_child(_tile_button)
@@ -67,7 +53,18 @@ func _ready() -> void:
 		_tile_button.connect('mouse_exited', cam, '_on_UI_mouse_enter_exit', [false])
 		_tile_button.connect('toggled', self, '_on_tile_toggle', [tiles.keys()[i]])
 		if i == 0:
+			print('0')
 			_tile_button.pressed = true
+
+func _on_tile_toggle(pressed : bool, _tile_name : String):
+	if pressed:
+		cur_tile_name = _tile_name
+
+func _ready() -> void:
+	import_tiles(tiles_scene)
+	yield(get_tree(), 'idle_frame')
+	update_tiles()
+	print_debug('global_ready')
 	sort_layers()
 	for i in sorted_layers.size():
 		var _name = 'Layer %s' % i

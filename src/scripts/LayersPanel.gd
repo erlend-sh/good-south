@@ -13,7 +13,7 @@ func _ready() -> void:
 	G.layers_panel = self
 	G.layers_container = layers_container
 	G.layers_group = layers_group
-	G.tiles_scroll = get_parent().get_node('TilesPanel/Scroll')
+	G.tiles_scroll = get_parent().get_node('TilesPanel/Scroll/VBox')
 	if !G.layers_panel_visible:
 		layers_panel_visibility_button.emit_signal('pressed')
 

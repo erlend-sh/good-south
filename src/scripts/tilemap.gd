@@ -27,7 +27,7 @@ func _set_size(_s):
 func set_level(val):
 	level = val
 	if grid != null: draw_grid()
-	if cam != null: cam._trans.y = level
+	if cam != null: cam._translation.y = level * height
 		
 func _reset(_a):
 	if grid != null: draw_grid()
@@ -89,10 +89,10 @@ func draw_grid():
 	grid.begin(Mesh.PRIMITIVE_LINES)
 	var s = _size
 	for i in range(s + 1):
-		grid.add_vertex(Vector3(i - s/2, level, -s/2))
-		grid.add_vertex(Vector3(i - s/2, level,  s/2))
-		grid.add_vertex(Vector3(-s/2, level , i -s/2))
-		grid.add_vertex(Vector3( s/2, level , i -s/2))
+		grid.add_vertex(Vector3(i - s/2, level * height, -s/2))
+		grid.add_vertex(Vector3(i - s/2, level * height,  s/2))
+		grid.add_vertex(Vector3(-s/2, level * height, i -s/2))
+		grid.add_vertex(Vector3( s/2, level * height, i -s/2))
 	grid.end()
-	plane.translation.y = level
+	plane.translation.y = level * height
 	

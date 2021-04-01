@@ -39,6 +39,8 @@ pause_mode = 2
 
 [node name="TileMap3D" type="Node" parent="."]
 script = ExtResource( 1 )
+level = 1
+height = 0.5
 
 [node name="Cam" type="MeshInstance" parent="."]
 pause_mode = 1
@@ -191,6 +193,15 @@ margin_right = 107.0
 margin_bottom = 130.0
 rect_min_size = Vector2( 0, 128 )
 mouse_filter = 1
+
+[node name="VBox" type="VBoxContainer" parent="CanvasLayer/UI/VBox/TilesPanel/Scroll"]
+margin_right = 105.0
+margin_bottom = 128.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+__meta__ = {
+"_edit_use_anchors_": false
+}
 
 [connection signal="mouse_entered" from="CanvasLayer/UI/VBox/LayersPanel" to="Cam" method="_on_UI_mouse_enter_exit" binds= [ true ]]
 [connection signal="mouse_exited" from="CanvasLayer/UI/VBox/LayersPanel" to="Cam" method="_on_UI_mouse_enter_exit" binds= [ false ]]
