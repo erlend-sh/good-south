@@ -14,10 +14,10 @@ onready var plane_tile = preload('res://assets/meshes/TileIndecator.tres')
 onready var tiles_scene = preload('res://assets/scenes/Packed/Tiles.tscn').instance()
 
 var layers_group : ButtonGroup
-var layers_panel : PanelContainer
+var canvas_layer : CanvasLayer
 var layers_container : VBoxContainer
-var cam : MeshInstance
-var tiles_scroll : VBoxContainer
+var tilemap : Node
+var tiles_container : VBoxContainer
 var cur_layer := 0
 var layers_panel_visible := true
 var sorted_layers := []
@@ -27,7 +27,7 @@ var cur_tile_name := ''
 var layers := {
 	'layer000': {
 		'tiles': {},
-		'visibility': true
+		'visible': true
 		}
 	}
 
@@ -40,25 +40,23 @@ func import_tiles(_scene : Spatial):
 			var _node := []
 			for _sub in _child.get_children():
 				_node.append(_sub)
-				print(_child.name)
 			tiles[_child.name] = _node
 
 
 func update_tiles():
 	for i in tiles.keys().size():
 		var _tile_button = tile_button.instance()
-		tiles_scroll.add_child(_tile_button)
+		tiles_container.add_child(_tile_button)
 		_tile_button.text = tiles.keys()[i].capitalize()
-		_tile_button.connect('mouse_entered', cam, '_on_UI_mouse_enter_exit', [true])
-		_tile_button.connect('mouse_exited', cam, '_on_UI_mouse_enter_exit', [false])
+		_tile_button.mouse_filter = Control.MOUSE_FILTER_PASS
 		_tile_button.connect('toggled', self, '_on_tile_toggle', [tiles.keys()[i]])
 		if i == 0:
-			print('0')
 			_tile_button.pressed = true
 
 func _on_tile_toggle(pressed : bool, _tile_name : String):
 	if pressed:
 		cur_tile_name = _tile_name
+		tilemap.update_ind()
 
 func _ready() -> void:
 	import_tiles(tiles_scene)
@@ -69,17 +67,17 @@ func _ready() -> void:
 	for i in sorted_layers.size():
 		var _name = 'Layer %s' % i
 		var _tiles = layers[sorted_layers[i]]['tiles']
-		var _visibility = layers[sorted_layers[i]]['visibility']
+		var _visibility = layers[sorted_layers[i]]['visible']
 		var _layer = layer.instance()
 		layers_container.add_child(_layer)
 		for child in _layer.get_children():
-			child.connect('mouse_entered', cam, '_on_UI_mouse_enter_exit', [true])
-			child.connect('mouse_exited', cam, '_on_UI_mouse_enter_exit', [false])
+			child.connect('mouse_entered', tilemap, '_on_UI_mouse_enter_exit', [true])
+			child.connect('mouse_exited', tilemap, '_on_UI_mouse_enter_exit', [false])
 			if child.get_index() == 0:
-				child.connect('toggled', layers_panel, '_on_layer_toggled')
+				child.connect('toggled', canvas_layer, '_on_layer_toggled')
 				child.text = _name
 			else:
-				child.connect('toggled', layers_panel, '_on_layer_visibility_toggled', [child])
+				child.connect('toggled', canvas_layer, '_on_layer_visibility_toggled', [child])
 				child.pressed = _visibility
 			if cur_layer == i:
 				if child.get_index() == 0:
@@ -87,18 +85,18 @@ func _ready() -> void:
 
 func add_layer():
 	var _size = str(layers.keys().size()).pad_zeros(3)
-	layers['layer%s' % _size] = {'tiles': {}, 'visibility' : true}
+	layers['layer%s' % _size] = {'tiles': {}, 'visible' : true}
 	var _layer = layer.instance()
 	layers_container.add_child(_layer)
 	for child in _layer.get_children():
-		child.connect('mouse_entered', cam, '_on_UI_mouse_enter_exit', [true])
-		child.connect('mouse_exited', cam, '_on_UI_mouse_enter_exit', [false])
+		child.connect('mouse_entered', tilemap, '_on_UI_mouse_enter_exit', [true])
+		child.connect('mouse_exited', tilemap, '_on_UI_mouse_enter_exit', [false])
 		if child.get_index() == 0:
-			child.connect('toggled', layers_panel, '_on_layer_toggled')
+			child.connect('toggled', canvas_layer, '_on_layer_toggled')
 			child.text = 'Layer %s' % (layers.keys().size() - 1)
 			child.pressed = true
 		else:
-			child.connect('toggled', layers_panel, '_on_layer_visibility_toggled', [child])
+			child.connect('toggled', canvas_layer, '_on_layer_visibility_toggled', [child])
 			child.pressed = true
 	sort_layers()
 
@@ -116,9 +114,8 @@ func del_layer(): # NEEEEEEEEDS Fix
 	layers_container.get_child(cur_layer).free()
 	layers_container.get_child(cur_layer).get_child(0).pressed = true
 	if !layers_container.get_child(cur_layer).get_child(1).is_pressed():
-		cam.can_draw = false
+		tilemap.can_draw = false
 		layers_container.get_child(cur_layer).get_child(1).pressed = false
-		print('hidden')
 	layers.erase(_layer_name)
 	sort_layers()
 	var _temp_layers = {}
@@ -127,15 +124,15 @@ func del_layer(): # NEEEEEEEEDS Fix
 		layers_container.get_child(i).get_child(0).text = 'Layer %s' % i
 	layers = _temp_layers
 	sort_layers()
-	if cam.has_backup:
-		for i in cam.tiles_backup.size():
-			if !cam.tiles_backup[i] == null:
-				cam.tiles_backup[i].free()
-				cam.tiles_backup[i] = null
-		for key in cam.tiles_to_set.keys():
-			cam.tiles_to_set[key][cam.CUR_TILE_NODE].free()
-		cam.tiles_to_set = {}
-		cam.has_backup = false
+	if tilemap.has_backup:
+		for i in tilemap.tiles_backup.size():
+			if !tilemap.tiles_backup[i] == null:
+				tilemap.tiles_backup[i].free()
+				tilemap.tiles_backup[i] = null
+		for key in tilemap.tiles_to_set.keys():
+			tilemap.tiles_to_set[key][tilemap.CUR_TILE_NODE].free()
+		tilemap.tiles_to_set = {}
+		tilemap.has_backup = false
 
 func sort_layers():
 	sorted_layers = layers.keys()
