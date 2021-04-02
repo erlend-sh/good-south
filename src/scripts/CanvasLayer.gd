@@ -39,18 +39,12 @@ func _on_layer_toggled(pressed: bool) -> void:
 		if G.tilemap != null:
 			G.tilemap.can_draw = false
 
-
-
 func _on_layer_visibility_toggled(pressed : bool, button : Button):
 	var _layer_name = 'layer%s' % str(button.get_parent().get_index()).pad_zeros(3)
 	G.layers[_layer_name]['visible'] = pressed
 	var _keys = G.layers[_layer_name]['tiles'].keys()
 	for k in _keys:
 		G.layers[_layer_name]['tiles'][k][0].visible = pressed
-	# if G.layers['layer%s' % str(G.cur_layer).pad_zeros(3)]['visible'] == false:
-	# 	if G.tilemap != null:
-	# 		G.tilemap.can_draw = false
-	# 	print('hello')
 
 func _on_add_layer_pressed() -> void:
 	G.add_layer()

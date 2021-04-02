@@ -235,7 +235,7 @@ func get_tile_data(_neighs : Array, _tileset := G.cur_tile_name) -> Array:
 		[true, true, false, true]: # has left, forward and back neighs
 			_data = edge(_tileset, 0)
 		[true, false, true, true]: # has left, right and back neighs
-				_data = edge(_tileset, 90)
+			_data = edge(_tileset, 90)
 		[false, true, true, true]: # has forward, right and back neighs
 			_data = edge(_tileset, 180)
 		[true, true, true, false]: # has left, right and forward neighs
@@ -446,7 +446,6 @@ func set_level(val):
 	level = val
 	if grid != null: draw_grid()
 	_translation.y = level * height
-	print(level)
 #END
 
 func _reset(_a):
@@ -461,31 +460,33 @@ func set_height(val):
 func draw_axes() -> void:
 	var axis := ImmediateGeometry.new()
 	axis.cast_shadow = false
-	var x_axis : ImmediateGeometry = axis.duplicate(); var y_axis : ImmediateGeometry = axis.duplicate(); var z_axis : ImmediateGeometry = axis.duplicate()
+	var x_axis := axis.duplicate(); var y_axis := axis.duplicate(); var z_axis := axis.duplicate()
 	var _mat := SpatialMaterial.new()
 	_mat.flags_unshaded = true
 	_mat.flags_transparent = true
 	_mat.render_priority = 2
-	var x_mat : SpatialMaterial = _mat.duplicate(); var y_mat : SpatialMaterial = _mat.duplicate(); var z_mat : SpatialMaterial = _mat.duplicate()
-	x_mat.albedo_color = Color(1, 0, 0, 0.6); y_mat.albedo_color = Color(0, 1, 0, 0.6); z_mat.albedo_color = Color(0, 0, 1, 0.6)
 	var x; var y; var z
 	add_child(axes)
 	axes.name = 'Axes'
 	for i in range(3):
 		var cur_ax = null
+		var _cur_mat =  _mat.duplicate()
 		match i:
 			0:
 				cur_ax = x_axis
-				cur_ax.set_material_override(x_mat)
+				_cur_mat.albedo_color = Color(1, 0, 0, 0.6)
+				cur_ax.set_material_override(_cur_mat)
 				x = 50; y = 0; z = 0
 			1:
 				cur_ax = y_axis
-				cur_ax.set_material_override(y_mat)
-				y_mat.render_priority = 4
+				_cur_mat.albedo_color = Color(0, 1, 0, 0.6)
+				cur_ax.set_material_override(_cur_mat)
+				_cur_mat.render_priority = 4
 				x = 0; y = 50; z = 0
 			2:
 				cur_ax = z_axis
-				cur_ax.set_material_override(z_mat)
+				_cur_mat.albedo_color = Color(0, 0, 1, 0.6)
+				cur_ax.set_material_override(_cur_mat)
 				x = 0; y = 0; z = 50
 		cur_ax.clear()
 		cur_ax.begin(Mesh.PRIMITIVE_LINES)
@@ -520,4 +521,3 @@ func _on_axis_toggle(_pressed: bool, _ind: int) -> void:
 
 func _on_change_height(_val : float) -> void:
 	set_height(_val)
-	prints(_val, height, level)
