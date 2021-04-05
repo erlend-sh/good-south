@@ -9,12 +9,12 @@ const SOLO_MIDDLE = 5
 
 onready var layer = preload('res://assets/scenes/Packed/Layer.tscn')
 onready var tile_button = preload('res://assets/scenes/Packed/TileButton.tscn')
-onready var plane_tile = preload('res://assets/meshes/TileIndecator.tres')
+onready var plane_tile = preload('res://assets/meshes/TileIndecator.mesh')
 
 onready var tiles_scene = preload('res://assets/scenes/Packed/Tiles.tscn').instance()
 
 var layers_group : ButtonGroup
-var canvas_layer : CanvasLayer
+var canvas_layer : MarginContainer
 var layers_container : VBoxContainer
 var tilemap : Node
 var tiles_container : VBoxContainer
@@ -39,8 +39,9 @@ func import_tiles(_scene : Spatial):
 		if _child.get_child_count() > 0:
 			var _node := []
 			for _sub in _child.get_children():
-				_node.append(_sub)
+				_node.append(_sub.duplicate())
 			tiles[_child.name] = _node
+	tiles_scene.queue_free()
 
 
 func update_tiles():
@@ -56,11 +57,15 @@ func update_tiles():
 func _on_tile_toggle(pressed : bool, _tile_name : String):
 	if pressed:
 		cur_tile_name = _tile_name
-		tilemap.update_ind()
+		if tilemap != null:
+			tilemap.update_ind()
+
 
 func _ready() -> void:
 	import_tiles(tiles_scene)
+	get_tree().connect('screen_resized', self, '_on_screen_resize')
 	yield(get_tree(), 'idle_frame')
+	tilemap.resize_viewport(get_viewport().size)
 	update_tiles()
 	print_debug('global_ready')
 	sort_layers()
@@ -82,6 +87,10 @@ func _ready() -> void:
 			if cur_layer == i:
 				if child.get_index() == 0:
 					child.pressed = true
+
+
+func _on_screen_resize():
+	tilemap.resize_viewport(get_viewport().size)
 
 func add_layer():
 	var _size = str(layers.keys().size()).pad_zeros(3)
@@ -105,13 +114,13 @@ func del_layer(): # NEEEEEEEEDS Fix
 		return
 	var _layer_name = 'layer%s' % str(cur_layer).pad_zeros(3)
 	for key in layers[_layer_name]['tiles'].keys():
-		var _mesh = layers[_layer_name]['tiles'][key][0].free()
+		var _mesh = layers[_layer_name]['tiles'][key][0].queue_free()
 # warning-ignore:return_value_discarded
 	if cur_layer == 0:
 		cur_layer = 0
 	else:
 		cur_layer = cur_layer - 1
-	layers_container.get_child(cur_layer).free()
+	layers_container.get_child(cur_layer).queue_free()
 	layers_container.get_child(cur_layer).get_child(0).pressed = true
 	if !layers_container.get_child(cur_layer).get_child(1).is_pressed():
 		tilemap.can_draw = false
@@ -127,10 +136,10 @@ func del_layer(): # NEEEEEEEEDS Fix
 	if tilemap.has_backup:
 		for i in tilemap.tiles_backup.size():
 			if !tilemap.tiles_backup[i] == null:
-				tilemap.tiles_backup[i].free()
+				tilemap.tiles_backup[i].queue_free()
 				tilemap.tiles_backup[i] = null
 		for key in tilemap.tiles_to_set.keys():
-			tilemap.tiles_to_set[key][tilemap.CUR_TILE_NODE].free()
+			tilemap.tiles_to_set[key][tilemap.CUR_TILE_NODE].queue_free()
 		tilemap.tiles_to_set = {}
 		tilemap.has_backup = false
 

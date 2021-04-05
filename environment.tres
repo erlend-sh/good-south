@@ -5,3 +5,13 @@
 [resource]
 background_mode = 2
 background_sky = ExtResource( 1 )
+fog_color = Color( 0.258824, 0.258824, 0.258824, 1 )
+fog_depth_curve = 0.392292
+fog_transmit_curve = 1.56917
+fog_height_min = -1.0
+fog_height_max = 4.6
+fog_height_curve = 0.366021
+auto_exposure_max_luma = 0.99
+auto_exposure_speed = 0.01
+dof_blur_far_distance = 60.0
+dof_blur_near_distance = 28.56

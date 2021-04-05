@@ -1,11 +1,11 @@
-extends CanvasLayer
+extends MarginContainer
 
 
-onready var layers_scroll = get_node('UI/Left/LayersPanel/VBox/Scroll') as ScrollContainer
-onready var add_layer_button = get_node('UI/Left/LayersPanel/VBox/Header/Add') as Button
-onready var del_layer_button = get_node('UI/Left/LayersPanel/VBox/Header/Del') as Button
-onready var layers_panel_visibility_button = get_node('UI/Left/LayersPanel/VBox/Header/Vis') as Button
-onready var layers_container = get_node('UI/Left/LayersPanel/VBox/Scroll/Layers_container') as VBoxContainer
+onready var layers_scroll = get_node('Left/LayersPanel/VBox/Scroll') as ScrollContainer
+onready var add_layer_button = get_node('Left/LayersPanel/VBox/Header/Add') as Button
+onready var del_layer_button = get_node('Left/LayersPanel/VBox/Header/Del') as Button
+onready var layers_panel_visibility_button = get_node('Left/LayersPanel/VBox/Header/Vis') as Button
+onready var layers_container = get_node('Left/LayersPanel/VBox/Scroll/Layers_container') as VBoxContainer
 
 onready var layers_group = preload('res://src/Groups/LayersGroup.tres') as ButtonGroup
 
@@ -14,7 +14,7 @@ func _ready() -> void:
 	G.canvas_layer = self
 	G.layers_container = layers_container
 	G.layers_group = layers_group
-	G.tiles_container = get_node('UI/Left/TilesPanel/Scroll/TilesContainer') as VBoxContainer
+	G.tiles_container = get_node('Left/TilesPanel/Scroll/TilesContainer') as VBoxContainer
 	if !G.layers_panel_visible:
 		layers_panel_visibility_button.emit_signal('pressed')
 

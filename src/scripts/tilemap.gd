@@ -1,4 +1,3 @@
-tool
 extends Node
 
 const LEFT := 0
@@ -26,9 +25,9 @@ onready var cam_gizmo = get_node('Cam') as MeshInstance
 onready var cam = get_node('Cam/3dCam') as Camera
 onready var ray = get_node('RayCast') as RayCast
 onready var tile_ind = get_node('TileIndecator') as MeshInstance
-onready var tile_label = get_node('CanvasLayer/UI/Left/Tile') as Label
+onready var tile_label = get_node('../../../Left/Tile') as Label
 onready var tiles_node = get_node('Tiles') as Spatial
-onready var view_gizmo = get_node('CanvasLayer/UI/TopRight/Gizmo/Viewport/Cam') as Spatial
+onready var view_gizmo = get_node('../../../TopRight/Gizmo/Viewport/Cam') as Spatial
 
 var tileset = {}
 var axes := Spatial.new()
@@ -37,7 +36,7 @@ var is_motion := false
 var is_draw = false
 var is_erase = false
 var is_rot := false
-var rot_spd := 0.1
+var rot_spd := 0.4
 var shift_pr := false
 var ray_length := 10000
 var is_pan := false
@@ -50,7 +49,7 @@ var has_backup := false
 var tiles_backup := {}
 var cur_neighs := [false, false, false, false]
 var _translation := Vector3.ZERO
-var _rotation := Vector3.ZERO
+var _rotation := Vector3(-45, 0, 0)
 
 func _ready():
 	G.tilemap = self
@@ -63,8 +62,10 @@ func _ready():
 	grid.cast_shadow = false
 	mat.flags_unshaded = true
 	mat.flags_transparent = true
+	mat.render_priority = 10
 	draw_grid()
 	draw_axes()
+	
 	#end drawing
 	
 	cam_gizmo.translation.y = level * height
@@ -77,6 +78,11 @@ func _ready():
 		_node.connect('mouse_entered', self, '_on_UI_mouse_enter_exit', [true])
 		_node.connect('mouse_exited', self, '_on_UI_mouse_enter_exit', [false])
 #END
+
+func resize_viewport(_size : Vector2):
+	get_parent().size = _size
+	get_parent().get_parent().get_parent().rect_size = _size
+
 
 func layer_is_visible(_layer := G.cur_layer) -> bool:
 	return true if G.layers[G.sorted_layers[_layer]]['visible'] else false
@@ -129,17 +135,18 @@ func draw_tile(_tile_pos : Vector3, _layer : int, _tile_name : String, inc_ind :
 
 
 func get_tile_pos(_tile : Vector3) -> Vector3:
-	return _tile - Vector3(11.5 , 0, 11.5)
+	var _s = (_size / 2) - 0.5
+	return _tile - Vector3(_s, 0, _s)
 #END
 
 func erase_tile(_tile_pos: Vector3, _layer := G.cur_layer):
 	if has_tile(_tile_pos, _layer):
 		var _tiles = get_tiles(_layer)
 		var _name = _tiles[_tile_pos][TILE_NAME]
-		_tiles[_tile_pos][TILE_NODE].free()
+		_tiles[_tile_pos][TILE_NODE].queue_free()
 		_tiles.erase(_tile_pos)
 		if _name != G.cur_tile_name:
-			backup(false, _name)
+			backup(_name)
 			restore_backup(_name)
 #END
 
@@ -163,6 +170,8 @@ func update_ind(_layer := G.cur_layer) -> void:
 	var _neighs = get_neighs(tile_pos, _layer)
 	var _data = get_tile_data(_neighs)
 	tile_ind.mesh = _data[0].mesh
+	tile_ind.scale.y = 1.0
+	_data[0].queue_free()
 	tile_ind.rotation_degrees.y = _data[3]
 #END
 
@@ -261,12 +270,14 @@ func _input(event: InputEvent) -> void:
 	if Input.is_action_just_released('shift'):
 		shift_pr = false
 	if event is InputEventMouseButton:
-		if event.button_index == BUTTON_WHEEL_UP || event.button_index == BUTTON_WHEEL_DOWN:
-			if event.button_index == BUTTON_WHEEL_UP && cam.translation.z > 3:
-				cam.translation.z -= 1
-			if event.button_index == BUTTON_WHEEL_DOWN && cam.translation.z < 40:
-				cam.translation.z += 1
-		if event.button_index == BUTTON_LEFT && can_draw:
+		if((!is_draw && !is_erase) && (!is_rot && !is_pan)):
+			if event.button_index == BUTTON_WHEEL_UP || event.button_index == BUTTON_WHEEL_DOWN:
+				if event.button_index == BUTTON_WHEEL_UP && cam.translation.z > 3:
+					cam.translation.z -= 1
+				if event.button_index == BUTTON_WHEEL_DOWN && cam.translation.z < 40:
+					cam.translation.z += 1
+
+		if event.button_index == BUTTON_LEFT && (can_draw && !is_erase):
 			if event.is_pressed():
 				if layer_is_visible():
 					if !is_rot && !is_pan && tile_ind.visible == true:
@@ -275,8 +286,8 @@ func _input(event: InputEvent) -> void:
 			else:
 				is_draw = false
 				if layer_is_visible():
-					backup(true)
-		if event.button_index == BUTTON_RIGHT && can_draw:
+					backup(G.cur_tile_name, true)
+		if event.button_index == BUTTON_RIGHT && (can_draw && !is_draw):
 			if event.is_pressed():
 				if layer_is_visible():
 					if !is_rot && !is_pan && tile_ind.visible == true:
@@ -287,11 +298,13 @@ func _input(event: InputEvent) -> void:
 				if layer_is_visible():
 					clean_backup()
 					update_ind()
-					backup(true)
+					backup(G.cur_tile_name, true)
+
 		if event.button_index == BUTTON_MIDDLE:
-			if event.is_pressed():
+			if event.is_pressed() && (!is_draw && !is_erase):
 				can_draw = false
 				clean_backup()
+				backup()
 				if !shift_pr:
 					is_rot = true
 					tile_ind.hide()
@@ -326,20 +339,22 @@ func _on_left_pressed():
 	if layer_is_visible():
 		restore_backup()
 		draw_tile(tile_pos, G.cur_layer, G.cur_tile_name)
-		backup(true)
+		backup(G.cur_tile_name, true)
 #END
+
 
 func _on_right_pressed():
 	if layer_is_visible():
 		var _name := ''
 		tile_ind.mesh = G.plane_tile
+		tile_ind.scale.y = height
+		restore_backup()
 		erase_tile(tile_pos, G.cur_layer)
-		clean_backup()
 		backup()
 #END
 
 func _on_update(delta : float):
-	var mouse = get_viewport().get_mouse_position()
+	var mouse = get_parent().get_mouse_position()
 	var from = cam.project_ray_origin(mouse)
 	var to = from + cam.project_ray_normal(mouse) * ray_length
 	ray.cast_to = to
@@ -357,22 +372,25 @@ func _on_update(delta : float):
 		else:
 			tile_ind.hide()
 			tile_label.text = 'Tile Null'
+			clean_backup()
 	#ON tile mouse enter
 	if last_pos != tile_pos:
 		_on_tile_mouse_enter()
 		last_pos = tile_pos
 #END
 
-func backup(_inc_ind := false, _tile_name := G.cur_tile_name):
+func backup(_tile_name := G.cur_tile_name, _inc_ind := false):
 	for i in range(4):
 		var _neigh = tile_pos + _dirs[i]
 		var _tiles = get_tiles(G.cur_layer)
-		if has_tile(_neigh, G.cur_layer) && _tiles[_neigh][TILE_NAME] == _tile_name :
-			var _neighs = get_neighs(_neigh, G.cur_layer, _tile_name, _inc_ind)
-			var _data = get_tile_data(_neighs, _tile_name)
-			tiles_backup[_neigh] = [_tiles[_neigh][TILE_NODE].mesh, _tiles[_neigh][TILE_NODE].rotation_degrees.y]
-			_tiles[_neigh][TILE_NODE].mesh = _data[TILE_NODE].mesh
-			_tiles[_neigh][TILE_NODE].rotation_degrees.y = _data[TILE_ROT]
+		if has_tile(_neigh, G.cur_layer) :
+			if _tiles[_neigh][TILE_NAME] == _tile_name:
+				var _neighs = get_neighs(_neigh, G.cur_layer, _tiles[_neigh][TILE_NAME], _inc_ind)
+				var _data = get_tile_data(_neighs, _tile_name)
+				tiles_backup[_neigh] = [_tiles[_neigh][TILE_NODE].mesh, _tiles[_neigh][TILE_NODE].rotation_degrees.y]
+				_tiles[_neigh][TILE_NODE].mesh = _data[TILE_NODE].mesh
+				_data[0].queue_free()
+				_tiles[_neigh][TILE_NODE].rotation_degrees.y = _data[TILE_ROT]
 	if tiles_backup.keys().size() > 0:
 		has_backup = true
 #END
@@ -381,6 +399,7 @@ func clean_backup():
 	if has_backup:
 		for _key in tiles_backup.keys():
 			get_tiles(G.cur_layer)[_key][TILE_NODE].mesh = tiles_backup[_key][0]
+			tiles_backup[_key][0] = null
 			get_tiles(G.cur_layer)[_key][TILE_NODE].rotation_degrees.y = tiles_backup[_key][1]
 		tiles_backup.clear()
 		has_backup = false
@@ -414,27 +433,34 @@ func _on_tile_mouse_enter() -> void:
 		else: #is move
 			update_ind()
 			restore_backup()
-			backup(true)
+			backup(G.cur_tile_name, true)
 		last_ind_pos = tile_ind.translation
 #END
 
 func _process(delta: float) -> void:
 	if is_motion:
 		_on_update(delta)
-	if !_translation.is_equal_approx(cam_gizmo.translation):
-		cam_gizmo.translation = cam_gizmo.translation.linear_interpolate(_translation, delta * 20)
-	if !_rotation.is_equal_approx(cam_gizmo.rotation_degrees):
-		cam_gizmo.rotation_degrees = cam_gizmo.rotation_degrees.linear_interpolate(_rotation, delta * 20)
-		view_gizmo.rotation_degrees = cam_gizmo.rotation_degrees
+	if cam_gizmo != null:
+		if !_translation.is_equal_approx(cam_gizmo.translation):
+			cam_gizmo.translation = cam_gizmo.translation.linear_interpolate(_translation, delta * 20)
+		if !_rotation.is_equal_approx(cam_gizmo.rotation_degrees):
+			cam_gizmo.rotation_degrees.y = lerp(cam_gizmo.rotation_degrees.y, _rotation.y, delta * 4)
+			cam_gizmo.rotation_degrees.x = lerp(cam_gizmo.rotation_degrees.x, _rotation.x, delta * 4)
+			view_gizmo.rotation_degrees = cam_gizmo.rotation_degrees
 #END
 
 func _on_UI_mouse_enter_exit(entered: bool) -> void:
 	can_draw = false if entered else true
+	if entered:
+		is_draw = false
+		is_erase = false
+		clean_backup()
 #END
 
 func set_grid_color(col):
-	grid_col = col
-	mat.albedo_color = col
+	if mat != null:
+		grid_col = col
+		mat.albedo_color = col
 #END
 
 func _set_size(_s):
@@ -476,18 +502,21 @@ func draw_axes() -> void:
 				cur_ax = x_axis
 				_cur_mat.albedo_color = Color(1, 0, 0, 0.6)
 				cur_ax.set_material_override(_cur_mat)
-				x = 50; y = 0; z = 0
+				_cur_mat.render_priority = 20
+				x = 50; y = 0.005; z = 0
 			1:
 				cur_ax = y_axis
 				_cur_mat.albedo_color = Color(0, 1, 0, 0.6)
 				cur_ax.set_material_override(_cur_mat)
+				_cur_mat.render_priority = 25
 				_cur_mat.render_priority = 4
-				x = 0; y = 50; z = 0
+				x = 0; y = 50 + 0.005; z = 0
 			2:
 				cur_ax = z_axis
 				_cur_mat.albedo_color = Color(0, 0, 1, 0.6)
 				cur_ax.set_material_override(_cur_mat)
-				x = 0; y = 0; z = 50
+				_cur_mat.render_priority = 20
+				x = 0; y = 0.005; z = 50
 		cur_ax.clear()
 		cur_ax.begin(Mesh.PRIMITIVE_LINES)
 		cur_ax.add_vertex(Vector3(-x, -y, -z))
@@ -501,12 +530,12 @@ func draw_grid():
 	grid.begin(Mesh.PRIMITIVE_LINES)
 	var s = _size
 	for i in range(s + 1):
-		grid.add_vertex(Vector3(i - s/2, level * height, -s/2))
-		grid.add_vertex(Vector3(i - s/2, level * height,  s/2))
-		grid.add_vertex(Vector3(-s/2, level * height, i -s/2))
-		grid.add_vertex(Vector3( s/2, level * height, i -s/2))
+		grid.add_vertex(Vector3(i - s/2, level * height + 0.005, -s/2))
+		grid.add_vertex(Vector3(i - s/2, level * height+ 0.005,  s/2))
+		grid.add_vertex(Vector3(-s/2, level * height+ 0.005, i -s/2))
+		grid.add_vertex(Vector3( s/2, level * height+ 0.005, i -s/2))
 	grid.end()
-	plane.translation.y = level * height
+	plane.translation.y = level * height + 0.005
 #END
 
 func _on_change_level(_val : int) -> void:
@@ -514,6 +543,7 @@ func _on_change_level(_val : int) -> void:
 
 func _on_Grid_toggled(_pressed: bool) -> void:
 	grid.visible = _pressed
+	plane.visible = _pressed
 
 func _on_axis_toggle(_pressed: bool, _ind: int) -> void:
 	axes.get_child(_ind).visible = _pressed

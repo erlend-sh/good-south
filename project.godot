@@ -8,6 +8,16 @@
 
 config_version=4
 
+_global_script_classes=[ {
+"base": "MeshInstance",
+"class": "PostEffectOutlineBox",
+"language": "GDScript",
+"path": "res://addons/pe_outline/PostEffectOutline.gd"
+} ]
+_global_script_class_icons={
+"PostEffectOutlineBox": ""
+}
+
 [application]
 
 config/name="Good South"
@@ -24,7 +34,10 @@ gdscript/warnings/enable=false
 
 [display]
 
+window/size/height=768
 window/size/always_on_top=true
+window/vsync/use_vsync=false
+window/stretch/aspect="keep"
 
 [input]
 
@@ -36,4 +49,6 @@ shift={
 
 [rendering]
 
+threads/thread_model=2
+quality/filters/use_nearest_mipmap_filter=true
 environment/default_environment="res://environment.tres"

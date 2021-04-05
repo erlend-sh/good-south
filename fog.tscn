@@ -1,0 +1,46 @@
+[gd_scene load_steps=7 format=2]
+
+[ext_resource path="res://assets/textures/fog.png" type="Texture" id=1]
+
+[sub_resource type="Gradient" id=1]
+offsets = PoolRealArray( 0, 0.278351, 0.742268, 1 )
+colors = PoolColorArray( 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0.884615, 1, 1, 1, 0 )
+
+[sub_resource type="GradientTexture" id=2]
+gradient = SubResource( 1 )
+
+[sub_resource type="ParticlesMaterial" id=3]
+emission_shape = 1
+emission_sphere_radius = 2.0
+gravity = Vector3( 0, 0, 0 )
+initial_velocity = 1.0
+angle = 720.0
+angle_random = 1.0
+scale = 5.0
+scale_random = 0.1
+color_ramp = SubResource( 2 )
+
+[sub_resource type="SpatialMaterial" id=4]
+flags_transparent = true
+vertex_color_use_as_albedo = true
+params_billboard_mode = 3
+params_billboard_keep_scale = true
+particles_anim_h_frames = 1
+particles_anim_v_frames = 1
+particles_anim_loop = false
+albedo_color = Color( 1, 1, 1, 0.0952549 )
+albedo_texture = ExtResource( 1 )
+metallic_specular = 1.0
+
+[sub_resource type="QuadMesh" id=5]
+material = SubResource( 4 )
+
+[node name="fog" type="Particles"]
+transform = Transform( 1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0 )
+amount = 10
+preprocess = 100.0
+speed_scale = 0.1
+visibility_aabb = AABB( -16, -16, -16, 32, 32, 32 )
+draw_order = 2
+process_material = SubResource( 3 )
+draw_pass_1 = SubResource( 5 )

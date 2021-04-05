@@ -1,119 +1,70 @@
-[gd_scene load_steps=13 format=2]
+[gd_scene load_steps=7 format=2]
 
-[ext_resource path="res://src/scripts/tilemap.gd" type="Script" id=1]
+[ext_resource path="res://assets/scenes/Packed/TileMap3D.tscn" type="PackedScene" id=1]
 [ext_resource path="res://src/scripts/CanvasLayer.gd" type="Script" id=2]
 [ext_resource path="res://environment.tres" type="Environment" id=3]
 [ext_resource path="res://assets/meshes/Gizmo.mesh" type="ArrayMesh" id=4]
-[ext_resource path="res://assets/meshes/Sea.mesh" type="ArrayMesh" id=5]
-[ext_resource path="res://assets/meshes/TileIndecator.tres" type="PlaneMesh" id=7]
 
-[sub_resource type="SphereMesh" id=7]
-radius = 0.05
-height = 0.1
+[sub_resource type="World" id=1]
+environment = ExtResource( 3 )
 
-[sub_resource type="SpatialMaterial" id=2]
-render_priority = 20
-flags_transparent = true
-flags_unshaded = true
-albedo_color = Color( 1, 0.376471, 0.376471, 0.498039 )
-
-[sub_resource type="ConcavePolygonShape" id=3]
-data = PoolVector3Array( 1, 0, 1, -1, 0, 1, 1, 0, -1, -1, 0, 1, -1, 0, -1, 1, 0, -1 )
-
-[sub_resource type="PlaneMesh" id=4]
-
-[sub_resource type="SpatialMaterial" id=5]
-flags_transparent = true
-flags_unshaded = true
-albedo_color = Color( 1, 1, 1, 0.0470588 )
-
-[sub_resource type="StyleBoxFlat" id=6]
+[sub_resource type="StyleBoxFlat" id=2]
 content_margin_left = 2.0
 content_margin_right = 2.0
 content_margin_top = 2.0
 content_margin_bottom = 2.0
 bg_color = Color( 0.176471, 0.176471, 0.176471, 0.176471 )
 
-[node name="Spatial" type="Spatial"]
-pause_mode = 2
-
-[node name="TileMap3D" type="Node" parent="."]
-script = ExtResource( 1 )
-height = 0.5
-
-[node name="Tiles" type="Spatial" parent="TileMap3D"]
-
-[node name="Cam" type="MeshInstance" parent="TileMap3D"]
-pause_mode = 1
-transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, 0, 0, 0 )
-mesh = SubResource( 7 )
-material/0 = SubResource( 2 )
-
-[node name="3dCam" type="Camera" parent="TileMap3D/Cam"]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 15 )
-keep_aspect = 0
-environment = ExtResource( 3 )
-current = true
-size = 15.0
-far = 1024.0
-
-[node name="RayCast" type="RayCast" parent="TileMap3D"]
-enabled = true
-collision_mask = 2
-
-[node name="DirectionalLight" type="DirectionalLight" parent="TileMap3D"]
-transform = Transform( 0.433013, 0.866025, 0.25, -0.5, -8.05284e-09, 0.866025, 0.75, -0.5, 0.433013, 0, 7.0439, 0 )
-shadow_enabled = true
-shadow_bias = 0.04
-directional_shadow_normal_bias = 0.0
-
-[node name="Plane" type="StaticBody" parent="TileMap3D"]
-transform = Transform( 11.99, 0, 0, 0, 1, 0, 0, 0, 11.99, 0, 0.5, 0 )
-collision_layer = 2
-collision_mask = 2
-
-[node name="Coll" type="CollisionShape" parent="TileMap3D/Plane"]
-shape = SubResource( 3 )
-
-[node name="Plane" type="MeshInstance" parent="TileMap3D/Plane"]
-mesh = SubResource( 4 )
-material/0 = SubResource( 5 )
-
-[node name="TileIndecator" type="MeshInstance" parent="TileMap3D"]
-mesh = ExtResource( 7 )
-material/0 = null
-
-[node name="CanvasLayer" type="CanvasLayer" parent="TileMap3D"]
+[node name="UI" type="MarginContainer"]
+margin_right = 1024.0
+margin_bottom = 768.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
 script = ExtResource( 2 )
-
-[node name="UI" type="MarginContainer" parent="TileMap3D/CanvasLayer"]
-anchor_right = 1.0
-anchor_bottom = 1.0
-margin_top = 2.0
-margin_bottom = -2.0
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="TopRight" type="HBoxContainer" parent="TileMap3D/CanvasLayer/UI"]
+[node name="ViewportContainer" type="ViewportContainer" parent="."]
+margin_right = 1024.0
+margin_bottom = 768.0
+mouse_filter = 1
+size_flags_horizontal = 3
+size_flags_vertical = 3
+stretch = true
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Viewport" type="Viewport" parent="ViewportContainer"]
+size = Vector2( 1024, 768 )
+world = SubResource( 1 )
+handle_input_locally = false
+hdr = false
+render_target_update_mode = 3
+shadow_atlas_size = 1
+
+[node name="TileMap3D" parent="ViewportContainer/Viewport" instance=ExtResource( 1 )]
+
+[node name="TopRight" type="HBoxContainer" parent="."]
 margin_left = 832.0
 margin_right = 1024.0
 margin_bottom = 64.0
 size_flags_horizontal = 8
 size_flags_vertical = 0
 
-[node name="VBox" type="VBoxContainer" parent="TileMap3D/CanvasLayer/UI/TopRight"]
+[node name="VBox" type="VBoxContainer" parent="TopRight"]
 margin_right = 124.0
 margin_bottom = 64.0
 
-[node name="GridPanel" type="PanelContainer" parent="TileMap3D/CanvasLayer/UI/TopRight/VBox" groups=[
+[node name="GridPanel" type="PanelContainer" parent="TopRight/VBox" groups=[
 "UI",
 ]]
 margin_right = 124.0
 margin_bottom = 34.0
 size_flags_vertical = 0
 
-[node name="HBox" type="HBoxContainer" parent="TileMap3D/CanvasLayer/UI/TopRight/VBox/GridPanel"]
+[node name="HBox" type="HBoxContainer" parent="TopRight/VBox/GridPanel"]
 margin_left = 7.0
 margin_top = 7.0
 margin_right = 117.0
@@ -122,7 +73,7 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Grid" type="Button" parent="TileMap3D/CanvasLayer/UI/TopRight/VBox/GridPanel/HBox"]
+[node name="Grid" type="Button" parent="TopRight/VBox/GridPanel/HBox"]
 margin_right = 39.0
 margin_bottom = 20.0
 mouse_filter = 1
@@ -130,7 +81,7 @@ toggle_mode = true
 pressed = true
 text = "Grid"
 
-[node name="X" type="Button" parent="TileMap3D/CanvasLayer/UI/TopRight/VBox/GridPanel/HBox"]
+[node name="X" type="Button" parent="TopRight/VBox/GridPanel/HBox"]
 margin_left = 43.0
 margin_right = 63.0
 margin_bottom = 20.0
@@ -139,7 +90,7 @@ toggle_mode = true
 pressed = true
 text = "X"
 
-[node name="Y" type="Button" parent="TileMap3D/CanvasLayer/UI/TopRight/VBox/GridPanel/HBox"]
+[node name="Y" type="Button" parent="TopRight/VBox/GridPanel/HBox"]
 margin_left = 67.0
 margin_right = 86.0
 margin_bottom = 20.0
@@ -148,7 +99,7 @@ toggle_mode = true
 pressed = true
 text = "Y"
 
-[node name="Z" type="Button" parent="TileMap3D/CanvasLayer/UI/TopRight/VBox/GridPanel/HBox"]
+[node name="Z" type="Button" parent="TopRight/VBox/GridPanel/HBox"]
 margin_left = 90.0
 margin_right = 110.0
 margin_bottom = 20.0
@@ -157,59 +108,60 @@ toggle_mode = true
 pressed = true
 text = "Z"
 
-[node name="HBox" type="HBoxContainer" parent="TileMap3D/CanvasLayer/UI/TopRight/VBox"]
+[node name="HBox" type="HBoxContainer" parent="TopRight/VBox"]
 margin_top = 38.0
 margin_right = 124.0
 margin_bottom = 58.0
 
-[node name="Button" type="Button" parent="TileMap3D/CanvasLayer/UI/TopRight/VBox/HBox"]
+[node name="Button" type="Button" parent="TopRight/VBox/HBox"]
 margin_right = 60.0
 margin_bottom = 20.0
 size_flags_horizontal = 3
 text = "Ortho"
 
-[node name="Button2" type="Button" parent="TileMap3D/CanvasLayer/UI/TopRight/VBox/HBox"]
+[node name="Button2" type="Button" parent="TopRight/VBox/HBox"]
 margin_left = 64.0
 margin_right = 124.0
 margin_bottom = 20.0
 size_flags_horizontal = 3
 text = "Persp"
 
-[node name="Gizmo" type="ViewportContainer" parent="TileMap3D/CanvasLayer/UI/TopRight"]
+[node name="Gizmo" type="ViewportContainer" parent="TopRight"]
 margin_left = 128.0
 margin_right = 192.0
 margin_bottom = 64.0
 size_flags_horizontal = 8
 size_flags_vertical = 0
 
-[node name="Viewport" type="Viewport" parent="TileMap3D/CanvasLayer/UI/TopRight/Gizmo"]
+[node name="Viewport" type="Viewport" parent="TopRight/Gizmo"]
 size = Vector2( 64, 64 )
 own_world = true
 transparent_bg = true
 handle_input_locally = false
 render_target_update_mode = 3
 
-[node name="Gizmo" type="MeshInstance" parent="TileMap3D/CanvasLayer/UI/TopRight/Gizmo/Viewport"]
+[node name="Gizmo" type="MeshInstance" parent="TopRight/Gizmo/Viewport"]
 transform = Transform( 0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0, 0 )
 mesh = ExtResource( 4 )
 material/0 = null
 
-[node name="Cam" type="Spatial" parent="TileMap3D/CanvasLayer/UI/TopRight/Gizmo/Viewport"]
+[node name="Cam" type="Spatial" parent="TopRight/Gizmo/Viewport"]
+transform = Transform( 1, 0, 0, 0, 0.707102, 0.707112, 0, -0.707112, 0.707102, 0, 0, 0 )
 
-[node name="Camera" type="Camera" parent="TileMap3D/CanvasLayer/UI/TopRight/Gizmo/Viewport/Cam"]
+[node name="Camera" type="Camera" parent="TopRight/Gizmo/Viewport/Cam"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 2 )
 projection = 1
 current = true
 size = 1.15
 
-[node name="Left" type="VBoxContainer" parent="TileMap3D/CanvasLayer/UI"]
+[node name="Left" type="VBoxContainer" parent="."]
 margin_right = 124.0
-margin_bottom = 596.0
+margin_bottom = 768.0
 mouse_filter = 0
 size_flags_horizontal = 0
 custom_constants/separation = 0
 
-[node name="Tile" type="Label" parent="TileMap3D/CanvasLayer/UI/Left"]
+[node name="Tile" type="Label" parent="Left"]
 margin_right = 71.0
 margin_bottom = 14.0
 size_flags_horizontal = 0
@@ -217,7 +169,7 @@ size_flags_vertical = 0
 custom_colors/font_color = Color( 0, 0, 0, 1 )
 text = "Tile_size = "
 
-[node name="LayersPanel" type="PanelContainer" parent="TileMap3D/CanvasLayer/UI/Left" groups=[
+[node name="LayersPanel" type="PanelContainer" parent="Left" groups=[
 "UI",
 ]]
 margin_top = 14.0
@@ -225,27 +177,27 @@ margin_right = 124.0
 margin_bottom = 176.0
 size_flags_horizontal = 3
 size_flags_vertical = 5
-custom_styles/panel = SubResource( 6 )
+custom_styles/panel = SubResource( 2 )
 
-[node name="VBox" type="VBoxContainer" parent="TileMap3D/CanvasLayer/UI/Left/LayersPanel"]
+[node name="VBox" type="VBoxContainer" parent="Left/LayersPanel"]
 margin_left = 2.0
 margin_top = 2.0
 margin_right = 122.0
 margin_bottom = 160.0
 custom_constants/separation = 10
 
-[node name="Header" type="HBoxContainer" parent="TileMap3D/CanvasLayer/UI/Left/LayersPanel/VBox"]
+[node name="Header" type="HBoxContainer" parent="Left/LayersPanel/VBox"]
 margin_right = 120.0
 margin_bottom = 20.0
 
-[node name="Add" type="Button" parent="TileMap3D/CanvasLayer/UI/Left/LayersPanel/VBox/Header"]
+[node name="Add" type="Button" parent="Left/LayersPanel/VBox/Header"]
 margin_right = 37.0
 margin_bottom = 20.0
 mouse_filter = 1
 size_flags_horizontal = 3
 text = "add"
 
-[node name="Del" type="Button" parent="TileMap3D/CanvasLayer/UI/Left/LayersPanel/VBox/Header"]
+[node name="Del" type="Button" parent="Left/LayersPanel/VBox/Header"]
 margin_left = 41.0
 margin_right = 78.0
 margin_bottom = 20.0
@@ -253,7 +205,7 @@ mouse_filter = 1
 size_flags_horizontal = 3
 text = "del"
 
-[node name="Vis" type="Button" parent="TileMap3D/CanvasLayer/UI/Left/LayersPanel/VBox/Header"]
+[node name="Vis" type="Button" parent="Left/LayersPanel/VBox/Header"]
 margin_left = 82.0
 margin_right = 120.0
 margin_bottom = 20.0
@@ -261,7 +213,7 @@ mouse_filter = 1
 size_flags_horizontal = 3
 text = "vis"
 
-[node name="Scroll" type="ScrollContainer" parent="TileMap3D/CanvasLayer/UI/Left/LayersPanel/VBox"]
+[node name="Scroll" type="ScrollContainer" parent="Left/LayersPanel/VBox"]
 margin_top = 30.0
 margin_right = 120.0
 margin_bottom = 158.0
@@ -269,11 +221,11 @@ rect_min_size = Vector2( 0, 128 )
 mouse_filter = 1
 size_flags_vertical = 3
 
-[node name="Layers_container" type="VBoxContainer" parent="TileMap3D/CanvasLayer/UI/Left/LayersPanel/VBox/Scroll"]
+[node name="Layers_container" type="VBoxContainer" parent="Left/LayersPanel/VBox/Scroll"]
 margin_right = 120.0
 size_flags_horizontal = 3
 
-[node name="LevelPanel" type="PanelContainer" parent="TileMap3D/CanvasLayer/UI/Left" groups=[
+[node name="LevelPanel" type="PanelContainer" parent="Left" groups=[
 "UI",
 ]]
 margin_top = 176.0
@@ -281,26 +233,26 @@ margin_right = 124.0
 margin_bottom = 204.0
 size_flags_horizontal = 3
 size_flags_vertical = 5
-custom_styles/panel = SubResource( 6 )
+custom_styles/panel = SubResource( 2 )
 
-[node name="VBox" type="VBoxContainer" parent="TileMap3D/CanvasLayer/UI/Left/LevelPanel"]
+[node name="VBox" type="VBoxContainer" parent="Left/LevelPanel"]
 margin_left = 2.0
 margin_top = 2.0
 margin_right = 122.0
 margin_bottom = 26.0
 
-[node name="HBox" type="HBoxContainer" parent="TileMap3D/CanvasLayer/UI/Left/LevelPanel/VBox"]
+[node name="HBox" type="HBoxContainer" parent="Left/LevelPanel/VBox"]
 margin_right = 120.0
 margin_bottom = 24.0
 
-[node name="Label" type="Label" parent="TileMap3D/CanvasLayer/UI/Left/LevelPanel/VBox/HBox"]
+[node name="Label" type="Label" parent="Left/LevelPanel/VBox/HBox"]
 margin_top = 5.0
 margin_right = 42.0
 margin_bottom = 19.0
 rect_min_size = Vector2( 42, 0 )
 text = "Level"
 
-[node name="SpinBox" type="SpinBox" parent="TileMap3D/CanvasLayer/UI/Left/LevelPanel/VBox/HBox"]
+[node name="SpinBox" type="SpinBox" parent="Left/LevelPanel/VBox/HBox"]
 margin_left = 46.0
 margin_right = 120.0
 margin_bottom = 24.0
@@ -308,7 +260,7 @@ mouse_filter = 1
 max_value = 5.0
 align = 1
 
-[node name="HeightPanel" type="PanelContainer" parent="TileMap3D/CanvasLayer/UI/Left" groups=[
+[node name="HeightPanel" type="PanelContainer" parent="Left" groups=[
 "UI",
 ]]
 margin_top = 204.0
@@ -316,25 +268,25 @@ margin_right = 124.0
 margin_bottom = 232.0
 size_flags_horizontal = 3
 size_flags_vertical = 5
-custom_styles/panel = SubResource( 6 )
+custom_styles/panel = SubResource( 2 )
 
-[node name="VBox" type="VBoxContainer" parent="TileMap3D/CanvasLayer/UI/Left/HeightPanel"]
+[node name="VBox" type="VBoxContainer" parent="Left/HeightPanel"]
 margin_left = 2.0
 margin_top = 2.0
 margin_right = 122.0
 margin_bottom = 26.0
 
-[node name="HBox" type="HBoxContainer" parent="TileMap3D/CanvasLayer/UI/Left/HeightPanel/VBox"]
+[node name="HBox" type="HBoxContainer" parent="Left/HeightPanel/VBox"]
 margin_right = 120.0
 margin_bottom = 24.0
 
-[node name="Label" type="Label" parent="TileMap3D/CanvasLayer/UI/Left/HeightPanel/VBox/HBox"]
+[node name="Label" type="Label" parent="Left/HeightPanel/VBox/HBox"]
 margin_top = 5.0
 margin_right = 42.0
 margin_bottom = 19.0
 text = "Height"
 
-[node name="SpinBox" type="SpinBox" parent="TileMap3D/CanvasLayer/UI/Left/HeightPanel/VBox/HBox"]
+[node name="SpinBox" type="SpinBox" parent="Left/HeightPanel/VBox/HBox"]
 margin_left = 46.0
 margin_right = 120.0
 margin_bottom = 24.0
@@ -345,17 +297,17 @@ step = 0.1
 value = 0.5
 align = 1
 
-[node name="TilesPanel" type="PanelContainer" parent="TileMap3D/CanvasLayer/UI/Left" groups=[
+[node name="TilesPanel" type="PanelContainer" parent="Left" groups=[
 "UI",
 ]]
-margin_top = 464.0
+margin_top = 636.0
 margin_right = 124.0
-margin_bottom = 596.0
+margin_bottom = 768.0
 size_flags_horizontal = 3
 size_flags_vertical = 10
-custom_styles/panel = SubResource( 6 )
+custom_styles/panel = SubResource( 2 )
 
-[node name="Scroll" type="ScrollContainer" parent="TileMap3D/CanvasLayer/UI/Left/TilesPanel"]
+[node name="Scroll" type="ScrollContainer" parent="Left/TilesPanel"]
 margin_left = 2.0
 margin_top = 2.0
 margin_right = 122.0
@@ -363,7 +315,7 @@ margin_bottom = 130.0
 rect_min_size = Vector2( 0, 128 )
 mouse_filter = 1
 
-[node name="TilesContainer" type="VBoxContainer" parent="TileMap3D/CanvasLayer/UI/Left/TilesPanel/Scroll"]
+[node name="TilesContainer" type="VBoxContainer" parent="Left/TilesPanel/Scroll"]
 margin_right = 120.0
 margin_bottom = 128.0
 size_flags_horizontal = 3
@@ -371,17 +323,12 @@ size_flags_vertical = 3
 __meta__ = {
 "_edit_use_anchors_": false
 }
-
-[node name="Sea" type="MeshInstance" parent="TileMap3D"]
-mesh = ExtResource( 5 )
-material/0 = null
-
-[connection signal="toggled" from="TileMap3D/CanvasLayer/UI/TopRight/VBox/GridPanel/HBox/Grid" to="TileMap3D" method="_on_Grid_toggled"]
-[connection signal="toggled" from="TileMap3D/CanvasLayer/UI/TopRight/VBox/GridPanel/HBox/X" to="TileMap3D" method="_on_axis_toggle" binds= [ 0 ]]
-[connection signal="toggled" from="TileMap3D/CanvasLayer/UI/TopRight/VBox/GridPanel/HBox/Y" to="TileMap3D" method="_on_axis_toggle" binds= [ 1 ]]
-[connection signal="toggled" from="TileMap3D/CanvasLayer/UI/TopRight/VBox/GridPanel/HBox/Z" to="TileMap3D" method="_on_axis_toggle" binds= [ 2 ]]
-[connection signal="pressed" from="TileMap3D/CanvasLayer/UI/Left/LayersPanel/VBox/Header/Add" to="TileMap3D/CanvasLayer" method="_on_add_layer_pressed"]
-[connection signal="pressed" from="TileMap3D/CanvasLayer/UI/Left/LayersPanel/VBox/Header/Del" to="TileMap3D/CanvasLayer" method="_on_del_layer_pressed"]
-[connection signal="pressed" from="TileMap3D/CanvasLayer/UI/Left/LayersPanel/VBox/Header/Vis" to="TileMap3D/CanvasLayer" method="_on_layers_visibility_pressed"]
-[connection signal="value_changed" from="TileMap3D/CanvasLayer/UI/Left/LevelPanel/VBox/HBox/SpinBox" to="TileMap3D" method="_on_change_level"]
-[connection signal="value_changed" from="TileMap3D/CanvasLayer/UI/Left/HeightPanel/VBox/HBox/SpinBox" to="TileMap3D" method="_on_change_height"]
+[connection signal="toggled" from="TopRight/VBox/GridPanel/HBox/Grid" to="ViewportContainer/Viewport/TileMap3D" method="_on_Grid_toggled"]
+[connection signal="toggled" from="TopRight/VBox/GridPanel/HBox/X" to="ViewportContainer/Viewport/TileMap3D" method="_on_axis_toggle" binds= [ 0 ]]
+[connection signal="toggled" from="TopRight/VBox/GridPanel/HBox/Y" to="ViewportContainer/Viewport/TileMap3D" method="_on_axis_toggle" binds= [ 1 ]]
+[connection signal="toggled" from="TopRight/VBox/GridPanel/HBox/Z" to="ViewportContainer/Viewport/TileMap3D" method="_on_axis_toggle" binds= [ 2 ]]
+[connection signal="pressed" from="Left/LayersPanel/VBox/Header/Add" to="." method="_on_add_layer_pressed"]
+[connection signal="pressed" from="Left/LayersPanel/VBox/Header/Del" to="." method="_on_del_layer_pressed"]
+[connection signal="pressed" from="Left/LayersPanel/VBox/Header/Vis" to="." method="_on_layers_visibility_pressed"]
+[connection signal="value_changed" from="Left/LevelPanel/VBox/HBox/SpinBox" to="ViewportContainer/Viewport/TileMap3D" method="_on_change_level"]
+[connection signal="value_changed" from="Left/HeightPanel/VBox/HBox/SpinBox" to="ViewportContainer/Viewport/TileMap3D" method="_on_change_height"]

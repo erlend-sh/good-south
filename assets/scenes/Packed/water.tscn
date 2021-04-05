@@ -1,0 +1,40 @@
+[gd_scene load_steps=6 format=2]
+
+[ext_resource path="res://assets/materials/water.material" type="Material" id=1]
+
+[sub_resource type="QuadMesh" id=1]
+material = ExtResource( 1 )
+size = Vector2( 100, 100 )
+
+[sub_resource type="ParticlesMaterial" id=2]
+emission_shape = 2
+emission_box_extents = Vector3( 50, 50, 0 )
+direction = Vector3( 0, 0, 0 )
+gravity = Vector3( 0, 0, 0 )
+
+[sub_resource type="SpatialMaterial" id=3]
+flags_do_not_receive_shadows = true
+emission_enabled = true
+emission = Color( 1, 1, 1, 1 )
+emission_energy = 16.0
+emission_operator = 0
+emission_on_uv2 = false
+
+[sub_resource type="QuadMesh" id=4]
+material = SubResource( 3 )
+size = Vector2( 0.2, 0.2 )
+
+[node name="water" type="MeshInstance"]
+transform = Transform( 1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, -0.05, 0 )
+mesh = SubResource( 1 )
+material/0 = null
+
+[node name="Particles" type="Particles" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 1.1921e-07, 0, -1.1921e-07, 1, 0.0430784, 0.011385, -0.188455 )
+cast_shadow = 0
+amount = 20
+lifetime = 0.2
+explosiveness = 1.0
+randomness = 1.0
+process_material = SubResource( 2 )
+draw_pass_1 = SubResource( 4 )
