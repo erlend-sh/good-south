@@ -543,10 +543,10 @@ func _process(delta: float) -> void:
 		_on_update(delta)
 	if cam_gizmo != null:
 		if !_translation.is_equal_approx(cam_gizmo.translation):
-			cam_gizmo.translation = cam_gizmo.translation.linear_interpolate(_translation, delta * 20)
+			cam_gizmo.translation += (_translation - cam_gizmo.translation) * 0.6
 		if !_rotation.is_equal_approx(cam_gizmo.rotation_degrees):
-			cam_gizmo.rotation_degrees.y += (_rotation.y - cam_gizmo.rotation_degrees.y) * 0.6
-			cam_gizmo.rotation_degrees.x += (_rotation.x - cam_gizmo.rotation_degrees.x) * 0.6
+			cam_gizmo.rotation_degrees.y += (_rotation.y - cam_gizmo.rotation_degrees.y) * 0.1
+			cam_gizmo.rotation_degrees.x += (_rotation.x - cam_gizmo.rotation_degrees.x) * 0.1
 			view_gizmo.rotation_degrees = cam_gizmo.rotation_degrees
 #END
 
@@ -595,7 +595,7 @@ func draw_axes() -> void:
 	var x; var y; var z
 	add_child(axes)
 	axes.name = 'Axes'
-	for i in 3:
+	for i in 2:
 		var cur_ax = null
 		var _cur_mat =  _mat.duplicate()
 		match i:
@@ -606,13 +606,6 @@ func draw_axes() -> void:
 				_cur_mat.render_priority = 20
 				x = 50; y = 0.005; z = 0
 			1:
-				cur_ax = y_axis
-				_cur_mat.albedo_color = Color(0, 1, 0, 0.6)
-				cur_ax.set_material_override(_cur_mat)
-				_cur_mat.render_priority = 25
-				_cur_mat.render_priority = 4
-				x = 0; y = 50 + 0.005; z = 0
-			2:
 				cur_ax = z_axis
 				_cur_mat.albedo_color = Color(0, 0, 1, 0.6)
 				cur_ax.set_material_override(_cur_mat)

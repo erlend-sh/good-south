@@ -47,27 +47,27 @@ shadow_atlas_size = 1
 [node name="Tilemap" parent="VC/VP" instance=ExtResource( 4 )]
 
 [node name="TopRight" type="HBoxContainer" parent="."]
-margin_left = 832.0
+margin_left = 855.0
 margin_right = 1024.0
 margin_bottom = 64.0
 size_flags_horizontal = 8
 size_flags_vertical = 0
 
 [node name="VBox" type="VBoxContainer" parent="TopRight"]
-margin_right = 124.0
+margin_right = 101.0
 margin_bottom = 64.0
 
 [node name="GridPanel" type="PanelContainer" parent="TopRight/VBox" groups=[
 "UI",
 ]]
-margin_right = 124.0
+margin_right = 101.0
 margin_bottom = 34.0
 size_flags_vertical = 0
 
 [node name="HBox" type="HBoxContainer" parent="TopRight/VBox/GridPanel"]
 margin_left = 7.0
 margin_top = 7.0
-margin_right = 117.0
+margin_right = 94.0
 margin_bottom = 27.0
 __meta__ = {
 "_edit_use_anchors_": false
@@ -90,18 +90,9 @@ toggle_mode = true
 pressed = true
 text = "X"
 
-[node name="Y" type="Button" parent="TopRight/VBox/GridPanel/HBox"]
-margin_left = 67.0
-margin_right = 86.0
-margin_bottom = 20.0
-mouse_filter = 1
-toggle_mode = true
-pressed = true
-text = "Y"
-
 [node name="Z" type="Button" parent="TopRight/VBox/GridPanel/HBox"]
-margin_left = 90.0
-margin_right = 110.0
+margin_left = 67.0
+margin_right = 87.0
 margin_bottom = 20.0
 mouse_filter = 1
 toggle_mode = true
@@ -110,25 +101,25 @@ text = "Z"
 
 [node name="HBox" type="HBoxContainer" parent="TopRight/VBox"]
 margin_top = 38.0
-margin_right = 124.0
+margin_right = 101.0
 margin_bottom = 58.0
 
 [node name="Button" type="Button" parent="TopRight/VBox/HBox"]
-margin_right = 60.0
+margin_right = 49.0
 margin_bottom = 20.0
 size_flags_horizontal = 3
 text = "Ortho"
 
 [node name="Button2" type="Button" parent="TopRight/VBox/HBox"]
-margin_left = 64.0
-margin_right = 124.0
+margin_left = 53.0
+margin_right = 101.0
 margin_bottom = 20.0
 size_flags_horizontal = 3
 text = "Persp"
 
 [node name="Gizmo" type="ViewportContainer" parent="TopRight"]
-margin_left = 128.0
-margin_right = 192.0
+margin_left = 105.0
+margin_right = 169.0
 margin_bottom = 64.0
 size_flags_horizontal = 8
 size_flags_vertical = 0
@@ -326,8 +317,7 @@ __meta__ = {
 
 [connection signal="toggled" from="TopRight/VBox/GridPanel/HBox/Grid" to="VC/VP/Tilemap" method="_on_Grid_toggled"]
 [connection signal="toggled" from="TopRight/VBox/GridPanel/HBox/X" to="VC/VP/Tilemap" method="_on_axis_toggle" binds= [ 0 ]]
-[connection signal="toggled" from="TopRight/VBox/GridPanel/HBox/Y" to="VC/VP/Tilemap" method="_on_axis_toggle" binds= [ 1 ]]
-[connection signal="toggled" from="TopRight/VBox/GridPanel/HBox/Z" to="VC/VP/Tilemap" method="_on_axis_toggle" binds= [ 2 ]]
+[connection signal="toggled" from="TopRight/VBox/GridPanel/HBox/Z" to="VC/VP/Tilemap" method="_on_axis_toggle" binds= [ 1 ]]
 [connection signal="pressed" from="Left/LayersPanel/VBox/Header/Add" to="." method="_on_add_layer_pressed"]
 [connection signal="pressed" from="Left/LayersPanel/VBox/Header/Del" to="." method="_on_del_layer_pressed"]
 [connection signal="pressed" from="Left/LayersPanel/VBox/Header/Vis" to="." method="_on_layers_visibility_pressed"]
