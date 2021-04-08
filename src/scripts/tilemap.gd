@@ -298,6 +298,7 @@ func get_tile_data(_neighs : Array, _tileset := cur_tile_name) -> Array:
 	return _data
 #END
 
+
 func _input(event: InputEvent) -> void:
 	if Input.is_action_just_pressed('shift'):
 		shift_pr = true
@@ -320,6 +321,7 @@ func _input(event: InputEvent) -> void:
 			else:
 				if is_draw:
 					is_draw = false
+					restore_backup()
 					#draw_tile(tile_pos, cur_layer, cur_tile_name)
 		if event.button_index == BUTTON_RIGHT && (can_draw && !is_draw):
 			if event.is_pressed():
@@ -328,11 +330,13 @@ func _input(event: InputEvent) -> void:
 						is_erase = true
 						_on_right_pressed()
 			else:
-				is_erase = false
-				if layer_is_visible():
-					clean_backup()
-					update_ind()
-					backup(tile_pos, cur_tile_name, true)
+				if is_erase:
+					is_erase = false
+					if layer_is_visible():
+						clean_backup()
+						update_ind()
+						if tile_ind.visible:
+							backup(tile_pos, cur_tile_name, true)
 
 		if event.button_index == BUTTON_MIDDLE:
 			if event.is_pressed() && (!is_draw && !is_erase):
@@ -387,33 +391,7 @@ func _on_right_pressed():
 		backup()
 #END
 
-func _on_update(delta : float):
-	var mouse = get_parent().get_mouse_position()
-	var from = cam.project_ray_origin(mouse)
-	var to = from + cam.project_ray_normal(mouse) * ray_length
-	ray.cast_to = to
-	ray.translation = from
-	if can_draw:
-		if ray.is_colliding() && (!is_rot && !is_pan):
-			var _pos = ray.get_collision_point().floor()
-			_pos.y = level * height
-			_pos.x += 0.5
-			_pos.z += 0.5
-			tile_ind.translation = _pos
-			tile_pos = _pos + Vector3(_size/2 - 0.5, 0, _size/2 - 0.5)
-			tile_label.text = 'Tile %s' % tile_pos
-			if !tile_ind.visible:	
-				tile_ind.show()
-				last_pos = tile_pos
-		else:
-			tile_ind.hide()
-			tile_label.text = 'Tile Null'
-			clean_backup()
-	#ON tile mouse enter
-	if last_pos != tile_pos:
-		_on_tile_mouse_enter()
-		last_pos = tile_pos
-#END
+
 
 func backup(_tile_pos:= tile_pos, _tile_name:= cur_tile_name, _inc_ind:= false):
 	for i in 4:
@@ -524,6 +502,71 @@ func fill_gaps() -> void:
 	draw_tile(tile_pos, cur_layer,cur_tile_name)
 #END
 
+func _process(delta: float) -> void:
+	if is_motion:
+		_on_update(delta)
+	if cam_gizmo != null:
+		if !_translation.is_equal_approx(cam_gizmo.translation):
+			cam_gizmo.translation += (_translation - cam_gizmo.translation) * 0.6
+		if !_rotation.is_equal_approx(cam_gizmo.rotation_degrees):
+			cam_gizmo.rotation_degrees.y += (_rotation.y - cam_gizmo.rotation_degrees.y) * 0.1
+			cam_gizmo.rotation_degrees.x += (_rotation.x - cam_gizmo.rotation_degrees.x) * 0.1
+			view_gizmo.rotation_degrees = cam_gizmo.rotation_degrees
+#END
+
+func _on_update(delta : float):
+	var mouse = get_parent().get_mouse_position()
+	var from = cam.project_ray_origin(mouse)
+	var to = from + cam.project_ray_normal(mouse) * ray_length
+	ray.cast_to = to
+	ray.translation = from
+	if can_draw:
+		if ray.is_colliding() && (!is_rot && !is_pan):
+			var _pos = ray.get_collision_point().floor()
+			_pos.y = level * height
+			_pos.x += 0.5
+			_pos.z += 0.5
+			tile_ind.translation = _pos
+			tile_pos = _pos + Vector3(_size/2 - 0.5, 0, _size/2 - 0.5)
+			tile_label.text = 'Tile %s' % tile_pos
+			if !tile_ind.visible:	
+				tile_ind.show()
+				last_pos = tile_pos
+				if is_draw:
+					print('draw')
+					update_ind()
+					backup(tile_pos, cur_tile_name, true)
+					draw_tile(tile_pos, cur_layer, cur_tile_name)
+					restore_backup()
+				elif is_erase:
+					print('erase')
+					tile_ind.mesh = plane_tile
+					erase_tile(tile_pos)
+					backup(tile_pos, cur_tile_name)
+					#restore_backup()
+				else:
+					print('move')
+					update_ind()
+					backup(tile_pos, cur_tile_name, true)
+		else:
+			if tile_ind.visible:
+				tile_ind.hide()
+				if is_erase:
+					backup(last_pos)
+					#restore_backup()
+					print('erase2')
+				else:
+					restore_backup()
+					backup(last_pos)
+					print('move2')
+
+				tile_label.text = 'Tile Null'
+	#ON tile mouse enter
+	if last_pos != tile_pos:
+		_on_tile_mouse_enter()
+		last_pos = tile_pos
+#END
+
 func _on_tile_mouse_enter() -> void:
 	if layer_is_visible():
 		if is_draw:
@@ -536,18 +579,6 @@ func _on_tile_mouse_enter() -> void:
 			update_ind()
 			restore_backup()
 			backup(tile_pos, cur_tile_name, true)
-#END
-
-func _process(delta: float) -> void:
-	if is_motion:
-		_on_update(delta)
-	if cam_gizmo != null:
-		if !_translation.is_equal_approx(cam_gizmo.translation):
-			cam_gizmo.translation += (_translation - cam_gizmo.translation) * 0.6
-		if !_rotation.is_equal_approx(cam_gizmo.rotation_degrees):
-			cam_gizmo.rotation_degrees.y += (_rotation.y - cam_gizmo.rotation_degrees.y) * 0.1
-			cam_gizmo.rotation_degrees.x += (_rotation.x - cam_gizmo.rotation_degrees.x) * 0.1
-			view_gizmo.rotation_degrees = cam_gizmo.rotation_degrees
 #END
 
 func _on_UI_mouse_enter_exit(entered: bool) -> void:

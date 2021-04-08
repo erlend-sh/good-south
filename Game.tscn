@@ -45,6 +45,7 @@ render_target_update_mode = 3
 shadow_atlas_size = 1
 
 [node name="Tilemap" parent="VC/VP" instance=ExtResource( 4 )]
+height = 1.0
 
 [node name="TopRight" type="HBoxContainer" parent="."]
 margin_left = 855.0
@@ -317,7 +318,6 @@ __meta__ = {
 
 [connection signal="toggled" from="TopRight/VBox/GridPanel/HBox/Grid" to="VC/VP/Tilemap" method="_on_Grid_toggled"]
 [connection signal="toggled" from="TopRight/VBox/GridPanel/HBox/X" to="VC/VP/Tilemap" method="_on_axis_toggle" binds= [ 0 ]]
-[connection signal="toggled" from="TopRight/VBox/GridPanel/HBox/Z" to="VC/VP/Tilemap" method="_on_axis_toggle" binds= [ 1 ]]
 [connection signal="pressed" from="Left/LayersPanel/VBox/Header/Add" to="." method="_on_add_layer_pressed"]
 [connection signal="pressed" from="Left/LayersPanel/VBox/Header/Del" to="." method="_on_del_layer_pressed"]
 [connection signal="pressed" from="Left/LayersPanel/VBox/Header/Vis" to="." method="_on_layers_visibility_pressed"]
