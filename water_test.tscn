@@ -1,0 +1,34 @@
+[gd_scene load_steps=6 format=2]
+
+[ext_resource path="res://assets/scenes/Packed/water.tscn" type="PackedScene" id=1]
+
+[sub_resource type="CylinderMesh" id=1]
+
+[sub_resource type="SpatialMaterial" id=2]
+albedo_color = Color( 1, 0.329412, 0.329412, 1 )
+
+[sub_resource type="CubeMesh" id=3]
+
+[sub_resource type="SpatialMaterial" id=4]
+albedo_color = Color( 0.945098, 0.639216, 0.282353, 1 )
+
+[node name="Spatial" type="Spatial"]
+
+[node name="water" parent="." instance=ExtResource( 1 )]
+
+[node name="DirectionalLight" type="DirectionalLight" parent="."]
+transform = Transform( 0.856356, -0.0278708, 0.515633, -0.417453, 0.550393, 0.723049, -0.303953, -0.83444, 0.459698, 0, -9.66762, 0 )
+light_energy = 0.5
+
+[node name="MeshInstance2" type="MeshInstance" parent="."]
+transform = Transform( 1, 0, 0, 0, 2.7226, 0, 0, 0, 1, 0, 0.231375, 0 )
+mesh = SubResource( 1 )
+material/0 = SubResource( 2 )
+
+[node name="MeshInstance4" type="MeshInstance" parent="."]
+transform = Transform( 1, 0, 0, 0, 0.98682, 0, 0, 0, 1, 0, 5.23818, 5.52493 )
+
+[node name="MeshInstance5" type="MeshInstance" parent="."]
+transform = Transform( 1, 0, 0, 0, 0.98682, 0, 0, 0, 1, 3.33736, -0.235726, 2.99498 )
+mesh = SubResource( 3 )
+material/0 = SubResource( 4 )

@@ -8,20 +8,14 @@
 
 config_version=4
 
-_global_script_classes=[ {
-"base": "MeshInstance",
-"class": "PostEffectOutlineBox",
-"language": "GDScript",
-"path": "res://addons/pe_outline/PostEffectOutline.gd"
-} ]
+_global_script_classes=[  ]
 _global_script_class_icons={
-"PostEffectOutlineBox": ""
 }
 
 [application]
 
 config/name="Good South"
-run/main_scene="res://Spatial.tscn"
+run/main_scene="res://Game.tscn"
 config/icon="res://icon.png"
 
 [autoload]

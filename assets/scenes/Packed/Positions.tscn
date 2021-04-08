@@ -1,0 +1,29 @@
+[gd_scene format=2]
+
+[node name="Positions" type="Spatial"]
+
+[node name="P0" type="Position3D" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.33, 0, 0.33 )
+
+[node name="P1" type="Position3D" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.33 )
+
+[node name="P2" type="Position3D" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -0.33, 0, 0.33 )
+
+[node name="P3" type="Position3D" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.33, 0, 0 )
+
+[node name="P4" type="Position3D" parent="."]
+
+[node name="P5" type="Position3D" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -0.33, 0, 0 )
+
+[node name="P6" type="Position3D" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.33, 0, -0.33 )
+
+[node name="P8" type="Position3D" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.33 )
+
+[node name="P9" type="Position3D" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -0.33, 0, -0.33 )

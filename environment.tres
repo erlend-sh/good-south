@@ -5,8 +5,10 @@
 [resource]
 background_mode = 2
 background_sky = ExtResource( 1 )
+fog_enabled = true
 fog_color = Color( 0.258824, 0.258824, 0.258824, 1 )
-fog_depth_curve = 0.392292
+fog_depth_curve = 0.307786
+fog_transmit_enabled = true
 fog_transmit_curve = 1.56917
 fog_height_min = -1.0
 fog_height_max = 4.6

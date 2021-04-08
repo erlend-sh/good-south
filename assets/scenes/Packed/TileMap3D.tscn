@@ -1,31 +1,32 @@
-[gd_scene load_steps=29 format=2]
+[gd_scene load_steps=27 format=2]
 
 [ext_resource path="res://environment.tres" type="Environment" id=1]
 [ext_resource path="res://src/scripts/tilemap.gd" type="Script" id=2]
+[ext_resource path="res://assets/textures/clouds_noise.png" type="Texture" id=3]
+[ext_resource path="res://assets/meshes/fog.mesh" type="ArrayMesh" id=4]
 [ext_resource path="res://assets/materials/water.material" type="Material" id=5]
-[ext_resource path="res://assets/textures/Water/Water_002_DISP.png" type="Texture" id=6]
 [ext_resource path="res://assets/materials/default.material" type="Material" id=7]
-[ext_resource path="res://assets/textures/water_disp.png" type="Texture" id=8]
-[ext_resource path="res://assets/textures/Water/Water_002_NORM.jpg" type="Texture" id=9]
-[ext_resource path="res://assets/textures/fog.png" type="Texture" id=10]
 
-[sub_resource type="Curve" id=19]
-max_value = 5.0
-_data = [ Vector2( 0, 3.79717 ), 0.0, 0.0, 0, 0, Vector2( 1, 5 ), 0.0, 0.0, 0, 0 ]
+[sub_resource type="Curve" id=1]
+max_value = 10.0
+_data = [ Vector2( 0, 2.41746 ), 0.0, 5.12044, 0, 0, Vector2( 1, 7.95991 ), -11.1427, 0.0, 0, 0 ]
 
-[sub_resource type="CurveTexture" id=20]
-curve = SubResource( 19 )
+[sub_resource type="CurveTexture" id=2]
+curve = SubResource( 1 )
 
-[sub_resource type="ParticlesMaterial" id=14]
+[sub_resource type="ParticlesMaterial" id=3]
 lifetime_randomness = 0.1
 emission_shape = 1
 emission_sphere_radius = 22.0
 spread = 100.0
-gravity = Vector3( 4, -1, 0 )
-scale_curve = SubResource( 20 )
+gravity = Vector3( 6, 0, 0 )
+radial_accel = 5.0
+scale_curve = SubResource( 2 )
+color = Color( 0.74902, 0.247059, 0.247059, 1 )
 
-[sub_resource type="SpatialMaterial" id=16]
+[sub_resource type="SpatialMaterial" id=4]
 render_priority = 20
+flags_transparent = true
 flags_unshaded = true
 flags_vertex_lighting = true
 flags_do_not_receive_shadows = true
@@ -34,95 +35,26 @@ params_billboard_mode = 3
 particles_anim_h_frames = 1
 particles_anim_v_frames = 1
 particles_anim_loop = false
-albedo_texture = ExtResource( 10 )
+albedo_texture = ExtResource( 3 )
 
-[sub_resource type="QuadMesh" id=15]
-material = SubResource( 16 )
+[sub_resource type="QuadMesh" id=5]
+material = SubResource( 4 )
+size = Vector2( 2, 2 )
 
-[sub_resource type="CubeMesh" id=13]
+[sub_resource type="CubeMesh" id=6]
 
-[sub_resource type="Shader" id=11]
-code = "shader_type spatial;
-render_mode unshaded;
-render_mode depth_draw_opaque;
-
-uniform float val = 0.5;
-uniform vec4 albedo : hint_color;
-uniform sampler2D normal_map;
-uniform sampler2D displ_map;
-uniform float peer_factor = 0.2;
- 
-uniform vec4 intersection_color : hint_color;
-uniform float intersection_max_threshold = 0.8;
-uniform sampler2D displ_tex : hint_white;
-uniform float displ_amount = 0.6;
-uniform float near = 0.15;
-uniform float far = 300.0;
- 
-
-void fragment() {
-	float depth = texture(DEPTH_TEXTURE, SCREEN_UV).x;
-	vec2 displ = texture(displ_tex, UV - TIME / 40.0).rg;
-	displ = ((displ * 2.0) - 1.0) * displ_amount;
-	
-	depth = depth * 2.0 - 1.0;
-	depth = PROJECTION_MATRIX[3][2] / (depth + PROJECTION_MATRIX[2][2]);
-	depth = depth + VERTEX.z;
-	depth += displ.x;
-	
-	
-	//ALBEDO = albedo;
-	depth = exp(-depth * peer_factor);
-	//albedo *= 1.0 - depth;
-	vec4 col = mix(intersection_color, albedo, step(intersection_max_threshold, clamp(1.0 - depth, 0.0, 0.8)));
-	ALBEDO = col.rgb;
-	//ALPHA = clamp(1.0 - depth, 0.0, 1.0);
-	ALPHA = clamp(1.0 - depth, 0.0, 1.0);
-}"
-
-[sub_resource type="ShaderMaterial" id=12]
-render_priority = 6
-shader = SubResource( 11 )
-shader_param/val = 0.0
-shader_param/albedo = Color( 0.545098, 0.545098, 0.545098, 1 )
-shader_param/peer_factor = 2.405
-shader_param/intersection_color = Color( 0.454902, 0.454902, 0.454902, 1 )
-shader_param/intersection_max_threshold = 0.114
-shader_param/displ_amount = 0.0
-shader_param/near = 0.15
-shader_param/far = 300.0
-shader_param/normal_map = ExtResource( 9 )
-shader_param/displ_map = ExtResource( 6 )
-shader_param/displ_tex = ExtResource( 8 )
-
-[sub_resource type="ArrayMesh" id=1]
-resource_name = "Circle"
-surfaces/0 = {
-"aabb": AABB( -49.8779, 0, -49.8779, 99.7558, 10, 99.7558 ),
-"array_data": PoolByteArray( 255, 8, 133, 192, 0, 0, 0, 0, 80, 200, 49, 192, 22, 123, 15, 0, 70, 0, 151, 127, 226, 57, 206, 59, 33, 83, 56, 194, 0, 0, 32, 65, 20, 179, 152, 193, 25, 123, 10, 0, 48, 0, 139, 127, 55, 57, 25, 41, 28, 210, 147, 192, 0, 0, 0, 0, 217, 234, 244, 191, 25, 123, 10, 0, 48, 0, 139, 127, 56, 57, 206, 59, 88, 200, 49, 64, 0, 0, 0, 0, 253, 8, 133, 64, 241, 123, 234, 0, 105, 0, 186, 129, 237, 48, 206, 59, 130, 19, 13, 66, 0, 0, 32, 65, 119, 19, 13, 66, 237, 123, 237, 0, 89, 0, 167, 129, 9, 51, 25, 41, 57, 70, 98, 64, 0, 0, 0, 0, 40, 70, 98, 64, 237, 123, 237, 0, 89, 0, 167, 129, 22, 51, 206, 59, 246, 236, 156, 192, 0, 0, 0, 0, 54, 183, 121, 191, 27, 123, 5, 0, 24, 0, 132, 127, 132, 56, 206, 59, 84, 227, 37, 66, 0, 0, 32, 65, 116, 175, 221, 65, 234, 123, 241, 0, 70, 0, 151, 129, 196, 52, 25, 41, 3, 9, 133, 64, 0, 0, 0, 0, 67, 200, 49, 64, 234, 123, 241, 0, 70, 0, 151, 129, 202, 52, 206, 59, 151, 173, 67, 194, 0, 0, 32, 65, 231, 176, 27, 193, 27, 123, 5, 0, 24, 0, 132, 127, 130, 56, 25, 41, 0, 0, 160, 192, 0, 0, 0, 0, 177, 169, 202, 180, 27, 123, 0, 0, 0, 0, 129, 127, 150, 55, 206, 59, 30, 210, 147, 64, 0, 0, 0, 0, 184, 234, 244, 63, 231, 123, 246, 0, 48, 0, 139, 129, 39, 54, 206, 59, 251, 130, 71, 194, 0, 0, 32, 65, 25, 101, 23, 55, 27, 123, 0, 0, 0, 0, 129, 127, 145, 55, 25, 41, 246, 236, 156, 192, 0, 0, 0, 0, 40, 183, 121, 63, 27, 123, 251, 0, 232, 0, 132, 127, 39, 54, 206, 59, 156, 173, 67, 66, 0, 0, 32, 65, 210, 176, 27, 65, 229, 123, 251, 0, 24, 0, 132, 129, 145, 55, 25, 41, 248, 236, 156, 64, 0, 0, 0, 0, 234, 182, 121, 63, 229, 123, 251, 0, 24, 0, 132, 129, 149, 55, 206, 59, 151, 173, 67, 194, 0, 0, 32, 65, 251, 176, 27, 65, 27, 123, 251, 0, 232, 0, 132, 127, 34, 54, 25, 41, 28, 210, 147, 192, 0, 0, 0, 0, 209, 234, 244, 63, 25, 123, 246, 0, 208, 0, 139, 127, 202, 52, 206, 59, 0, 0, 160, 64, 0, 0, 0, 0, 52, 0, 162, 182, 229, 123, 0, 0, 0, 0, 129, 129, 132, 56, 206, 59, 33, 83, 56, 194, 0, 0, 32, 65, 30, 179, 152, 65, 25, 123, 246, 0, 208, 0, 139, 127, 196, 52, 25, 41, 255, 8, 133, 192, 0, 0, 0, 0, 80, 200, 49, 64, 22, 123, 241, 0, 186, 0, 151, 127, 23, 51, 206, 59, 151, 173, 67, 66, 0, 0, 32, 65, 26, 177, 27, 193, 229, 123, 5, 0, 232, 0, 132, 129, 55, 57, 25, 41, 244, 236, 156, 64, 0, 0, 0, 0, 137, 183, 121, 191, 229, 123, 5, 0, 232, 0, 132, 129, 56, 57, 206, 59, 119, 19, 13, 194, 0, 0, 32, 65, 125, 19, 13, 66, 19, 123, 237, 0, 167, 0, 167, 127, 222, 48, 25, 41, 48, 70, 98, 192, 0, 0, 0, 0, 48, 70, 98, 64, 19, 123, 237, 0, 167, 0, 167, 127, 238, 48, 206, 59, 30, 83, 56, 66, 0, 0, 32, 65, 46, 179, 152, 193, 231, 123, 10, 0, 208, 0, 139, 129, 225, 57, 25, 41, 21, 210, 147, 64, 0, 0, 0, 0, 3, 235, 244, 191, 231, 123, 10, 0, 208, 0, 139, 129, 226, 57, 206, 59, 80, 200, 49, 192, 0, 0, 0, 0, 255, 8, 133, 64, 15, 123, 234, 0, 151, 0, 186, 127, 91, 46, 206, 59, 248, 8, 133, 64, 0, 0, 0, 0, 101, 200, 49, 192, 234, 123, 15, 0, 186, 0, 151, 129, 121, 58, 206, 59, 121, 175, 221, 193, 0, 0, 32, 65, 81, 227, 37, 66, 15, 123, 234, 0, 151, 0, 186, 127, 56, 46, 25, 41, 209, 234, 244, 191, 0, 0, 0, 0, 28, 210, 147, 64, 10, 123, 231, 0, 139, 0, 208, 127, 148, 43, 206, 59, 129, 207, 178, 54, 0, 0, 32, 65, 251, 130, 71, 194, 0, 123, 27, 0, 126, 2, 245, 127, 200, 59, 25, 41, 50, 183, 121, 191, 0, 0, 0, 0, 246, 236, 156, 192, 5, 123, 27, 0, 124, 0, 232, 127, 164, 59, 206, 59, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 160, 192, 0, 123, 27, 0, 126, 2, 245, 127, 199, 59, 206, 59, 109, 19, 13, 66, 0, 0, 32, 65, 130, 19, 13, 194, 237, 123, 19, 0, 167, 0, 167, 129, 250, 58, 25, 41, 27, 70, 98, 64, 0, 0, 0, 0, 65, 70, 98, 192, 237, 123, 19, 0, 167, 0, 167, 129, 250, 58, 206, 59, 20, 179, 152, 193, 0, 0, 32, 65, 41, 83, 56, 66, 10, 123, 231, 0, 139, 0, 208, 127, 74, 43, 25, 41, 30, 183, 121, 191, 0, 0, 0, 0, 246, 236, 156, 64, 5, 123, 229, 0, 132, 0, 232, 127, 133, 40, 206, 59, 25, 179, 152, 193, 0, 0, 32, 65, 30, 83, 56, 194, 10, 123, 25, 0, 117, 0, 208, 127, 95, 59, 25, 41, 217, 234, 244, 191, 0, 0, 0, 0, 28, 210, 147, 192, 10, 123, 25, 0, 117, 0, 208, 127, 95, 59, 206, 59, 59, 200, 49, 64, 0, 0, 0, 0, 7, 9, 133, 192, 241, 123, 22, 0, 151, 0, 186, 129, 95, 59, 206, 59, 125, 9, 181, 55, 0, 0, 32, 65, 0, 131, 71, 66, 0, 123, 229, 0, 130, 254, 245, 127, 179, 38, 25, 41, 59, 171, 218, 53, 0, 0, 0, 0, 0, 0, 160, 64, 0, 123, 229, 0, 130, 254, 245, 127, 76, 39, 206, 59, 80, 200, 49, 192, 0, 0, 0, 0, 255, 8, 133, 192, 15, 123, 22, 0, 105, 0, 186, 127, 250, 58, 206, 59, 250, 178, 152, 65, 0, 0, 32, 65, 38, 83, 56, 194, 246, 123, 25, 0, 139, 0, 208, 129, 165, 59, 25, 41, 158, 234, 244, 63, 0, 0, 0, 0, 32, 210, 147, 192, 246, 123, 25, 0, 139, 0, 208, 129, 164, 59, 206, 59, 125, 9, 181, 55, 0, 0, 32, 65, 0, 131, 71, 66, 0, 123, 229, 0, 126, 254, 245, 129, 57, 40, 25, 41, 84, 183, 121, 63, 0, 0, 0, 0, 246, 236, 156, 64, 251, 123, 229, 0, 124, 0, 232, 129, 143, 43, 206, 59, 59, 171, 218, 53, 0, 0, 0, 0, 0, 0, 160, 64, 0, 123, 229, 0, 126, 254, 245, 129, 128, 40, 206, 59, 121, 175, 221, 193, 0, 0, 32, 65, 73, 227, 37, 194, 15, 123, 22, 0, 105, 0, 186, 127, 250, 58, 25, 41, 48, 70, 98, 192, 0, 0, 0, 0, 48, 70, 98, 192, 19, 123, 19, 0, 89, 0, 167, 127, 121, 58, 206, 59, 180, 182, 121, 63, 0, 0, 0, 0, 250, 236, 156, 192, 251, 123, 27, 0, 132, 0, 232, 129, 199, 59, 206, 59, 14, 177, 27, 65, 0, 0, 32, 65, 156, 173, 67, 66, 251, 123, 229, 0, 124, 0, 232, 129, 74, 43, 25, 41, 234, 234, 244, 63, 0, 0, 0, 0, 26, 210, 147, 64, 246, 123, 231, 0, 117, 0, 208, 129, 88, 46, 206, 59, 119, 19, 13, 194, 0, 0, 32, 65, 117, 19, 13, 194, 19, 123, 19, 0, 89, 0, 167, 127, 121, 58, 25, 41, 169, 176, 27, 65, 0, 0, 32, 65, 153, 173, 67, 194, 251, 123, 27, 0, 127, 0, 0, 129, 200, 59, 25, 41, 41, 179, 152, 65, 0, 0, 32, 65, 35, 83, 56, 66, 246, 123, 231, 0, 117, 0, 208, 129, 55, 46, 25, 41, 76, 227, 37, 194, 0, 0, 32, 65, 121, 175, 221, 193, 22, 123, 15, 0, 70, 0, 151, 127, 225, 57, 25, 41, 142, 175, 221, 65, 0, 0, 32, 65, 76, 227, 37, 66, 241, 123, 234, 0, 105, 0, 186, 129, 222, 48, 25, 41, 41, 83, 56, 66, 0, 0, 32, 65, 14, 179, 152, 65, 231, 123, 246, 0, 48, 0, 139, 129, 34, 54, 25, 41, 253, 130, 71, 66, 0, 0, 32, 65, 10, 93, 20, 184, 229, 123, 0, 0, 0, 0, 129, 129, 130, 56, 25, 41, 76, 227, 37, 194, 0, 0, 32, 65, 131, 175, 221, 65, 22, 123, 241, 0, 186, 0, 151, 127, 9, 51, 25, 41, 71, 227, 37, 66, 0, 0, 32, 65, 147, 175, 221, 193, 234, 123, 15, 0, 186, 0, 151, 129, 121, 58, 25, 41, 236, 176, 27, 193, 0, 0, 32, 65, 151, 173, 67, 194, 5, 123, 27, 0, 124, 0, 232, 127, 165, 59, 25, 41, 225, 176, 27, 193, 0, 0, 32, 65, 156, 173, 67, 66, 5, 123, 229, 0, 132, 0, 232, 127, 57, 40, 25, 41, 100, 175, 221, 65, 0, 0, 32, 65, 84, 227, 37, 194, 241, 123, 22, 0, 151, 0, 186, 129, 95, 59, 25, 41 ),
-"array_index_data": PoolByteArray( 0, 0, 2, 0, 1, 0, 3, 0, 5, 0, 4, 0, 1, 0, 2, 0, 6, 0, 5, 0, 8, 0, 7, 0, 9, 0, 6, 0, 10, 0, 7, 0, 8, 0, 11, 0, 12, 0, 10, 0, 13, 0, 11, 0, 15, 0, 14, 0, 16, 0, 13, 0, 17, 0, 14, 0, 15, 0, 18, 0, 19, 0, 17, 0, 20, 0, 18, 0, 22, 0, 21, 0, 20, 0, 24, 0, 23, 0, 22, 0, 26, 0, 25, 0, 23, 0, 24, 0, 27, 0, 25, 0, 26, 0, 28, 0, 29, 0, 27, 0, 30, 0, 31, 0, 33, 0, 32, 0, 28, 0, 35, 0, 34, 0, 36, 0, 30, 0, 37, 0, 32, 0, 39, 0, 38, 0, 34, 0, 35, 0, 40, 0, 37, 0, 42, 0, 41, 0, 38, 0, 39, 0, 43, 0, 40, 0, 45, 0, 44, 0, 46, 0, 48, 0, 47, 0, 49, 0, 43, 0, 50, 0, 44, 0, 45, 0, 51, 0, 52, 0, 47, 0, 53, 0, 54, 0, 50, 0, 0, 0, 55, 0, 51, 0, 33, 0, 56, 0, 53, 0, 3, 0, 0, 0, 1, 0, 57, 0, 3, 0, 4, 0, 58, 0, 1, 0, 6, 0, 9, 0, 5, 0, 7, 0, 4, 0, 9, 0, 10, 0, 12, 0, 7, 0, 11, 0, 59, 0, 12, 0, 13, 0, 16, 0, 11, 0, 14, 0, 59, 0, 16, 0, 17, 0, 19, 0, 14, 0, 18, 0, 60, 0, 19, 0, 20, 0, 61, 0, 18, 0, 21, 0, 60, 0, 20, 0, 23, 0, 61, 0, 22, 0, 25, 0, 21, 0, 23, 0, 27, 0, 29, 0, 25, 0, 28, 0, 62, 0, 29, 0, 30, 0, 36, 0, 31, 0, 32, 0, 63, 0, 28, 0, 34, 0, 62, 0, 36, 0, 37, 0, 64, 0, 32, 0, 38, 0, 63, 0, 34, 0, 40, 0, 65, 0, 37, 0, 41, 0, 64, 0, 38, 0, 43, 0, 49, 0, 40, 0, 44, 0, 65, 0, 46, 0, 47, 0, 52, 0, 49, 0, 50, 0, 54, 0, 44, 0, 51, 0, 55, 0, 52, 0, 53, 0, 56, 0, 54, 0, 0, 0, 57, 0, 55, 0, 33, 0, 31, 0, 56, 0, 3, 0, 58, 0 ),
-"blend_shape_data": [  ],
-"format": 97559,
-"index_count": 192,
-"material": SubResource( 12 ),
-"name": "fog",
-"primitive": 4,
-"skeleton_aabb": [  ],
-"vertex_count": 66
-}
-
-[sub_resource type="QuadMesh" id=21]
+[sub_resource type="QuadMesh" id=7]
 material = ExtResource( 5 )
 size = Vector2( 100, 100 )
 
-[sub_resource type="ParticlesMaterial" id=2]
+[sub_resource type="ParticlesMaterial" id=8]
 render_priority = 15
 emission_shape = 2
 emission_box_extents = Vector3( 50, 50, 0 )
 direction = Vector3( 0, 0, 0 )
 gravity = Vector3( 0, 0, 0 )
 
-[sub_resource type="SpatialMaterial" id=3]
+[sub_resource type="SpatialMaterial" id=9]
 flags_do_not_receive_shadows = true
 emission_enabled = true
 emission = Color( 1, 1, 1, 1 )
@@ -130,38 +62,38 @@ emission_energy = 16.0
 emission_operator = 0
 emission_on_uv2 = false
 
-[sub_resource type="QuadMesh" id=4]
-material = SubResource( 3 )
+[sub_resource type="QuadMesh" id=10]
+material = SubResource( 9 )
 size = Vector2( 0.1, 0.1 )
 
-[sub_resource type="SphereMesh" id=22]
+[sub_resource type="SphereMesh" id=11]
 radius = 0.05
 height = 0.1
 
-[sub_resource type="SpatialMaterial" id=23]
+[sub_resource type="SpatialMaterial" id=12]
 render_priority = 20
 flags_transparent = true
 flags_unshaded = true
 albedo_color = Color( 1, 0.376471, 0.376471, 0.498039 )
 
-[sub_resource type="ConcavePolygonShape" id=5]
+[sub_resource type="ConcavePolygonShape" id=13]
 data = PoolVector3Array( 1, 0, 1, -1, 0, 1, 1, 0, -1, -1, 0, 1, -1, 0, -1, 1, 0, -1 )
 
-[sub_resource type="PlaneMesh" id=6]
+[sub_resource type="PlaneMesh" id=14]
 
-[sub_resource type="SpatialMaterial" id=7]
+[sub_resource type="SpatialMaterial" id=15]
 render_priority = 100
 flags_transparent = true
 flags_unshaded = true
 albedo_color = Color( 1, 1, 1, 0.0470588 )
 
-[sub_resource type="SpatialMaterial" id=8]
+[sub_resource type="SpatialMaterial" id=16]
 render_priority = 15
 flags_transparent = true
 flags_unshaded = true
 albedo_color = Color( 1, 0.164706, 0, 0.45098 )
 
-[sub_resource type="ArrayMesh" id=9]
+[sub_resource type="ArrayMesh" id=17]
 surfaces/0 = {
 "aabb": AABB( -0.5, 0, -0.5, 1, 1.00001, 1.00001 ),
 "array_data": PoolByteArray( 0, 0, 0, 191, 0, 0, 128, 63, 0, 0, 0, 63, 129, 0, 0, 0, 0, 127, 0, 127, 0, 57, 0, 60, 0, 0, 0, 191, 0, 0, 0, 0, 0, 0, 0, 191, 129, 0, 0, 0, 0, 127, 0, 127, 0, 54, 0, 58, 0, 0, 0, 191, 0, 0, 0, 0, 0, 0, 0, 63, 129, 0, 0, 0, 0, 127, 0, 127, 0, 54, 0, 60, 0, 0, 0, 191, 0, 0, 128, 63, 0, 0, 0, 191, 0, 0, 129, 0, 0, 127, 0, 127, 0, 57, 0, 58, 0, 0, 0, 63, 0, 0, 0, 0, 0, 0, 0, 191, 0, 0, 129, 0, 0, 127, 0, 127, 0, 54, 0, 56, 0, 0, 0, 191, 0, 0, 0, 0, 0, 0, 0, 191, 0, 0, 129, 0, 0, 127, 0, 127, 0, 54, 0, 58, 0, 0, 0, 63, 0, 0, 128, 63, 0, 0, 0, 191, 127, 0, 0, 0, 0, 127, 0, 127, 0, 57, 0, 56, 0, 0, 0, 63, 0, 0, 0, 0, 0, 0, 0, 63, 127, 0, 0, 0, 0, 127, 0, 127, 0, 54, 0, 52, 0, 0, 0, 63, 0, 0, 0, 0, 0, 0, 0, 191, 127, 0, 0, 0, 0, 127, 0, 127, 0, 54, 0, 56, 0, 0, 0, 63, 0, 0, 128, 63, 0, 0, 0, 63, 0, 0, 127, 0, 0, 127, 0, 127, 0, 57, 0, 52, 0, 0, 0, 191, 0, 0, 0, 0, 0, 0, 0, 63, 0, 0, 127, 0, 0, 127, 0, 127, 0, 54, 0, 0, 0, 0, 0, 63, 0, 0, 0, 0, 0, 0, 0, 63, 0, 0, 127, 0, 0, 127, 0, 127, 0, 54, 0, 52, 0, 0, 0, 63, 0, 0, 0, 0, 0, 0, 0, 191, 0, 129, 0, 0, 127, 0, 0, 127, 0, 54, 0, 56, 0, 0, 0, 191, 0, 0, 0, 0, 0, 0, 0, 63, 0, 129, 0, 0, 127, 0, 0, 127, 0, 48, 0, 52, 0, 0, 0, 191, 0, 0, 0, 0, 0, 0, 0, 191, 0, 129, 0, 0, 127, 0, 0, 127, 0, 48, 0, 56, 0, 0, 0, 191, 0, 0, 128, 63, 0, 0, 0, 191, 0, 127, 0, 0, 129, 0, 0, 127, 0, 59, 0, 56, 0, 0, 0, 63, 0, 0, 128, 63, 0, 0, 0, 63, 0, 127, 0, 0, 129, 0, 0, 127, 0, 57, 0, 52, 0, 0, 0, 63, 0, 0, 128, 63, 0, 0, 0, 191, 0, 127, 0, 0, 129, 0, 0, 127, 0, 57, 0, 56, 0, 0, 0, 191, 0, 0, 128, 63, 0, 0, 0, 191, 129, 0, 0, 0, 0, 127, 0, 127, 0, 57, 0, 58, 0, 0, 0, 63, 0, 0, 128, 63, 0, 0, 0, 191, 0, 0, 129, 0, 0, 127, 0, 127, 0, 57, 0, 56, 0, 0, 0, 63, 0, 0, 128, 63, 0, 0, 0, 63, 127, 0, 0, 0, 0, 127, 0, 127, 0, 57, 0, 52, 0, 0, 0, 191, 0, 0, 128, 63, 0, 0, 0, 63, 0, 0, 127, 0, 0, 127, 0, 127, 0, 57, 0, 0, 0, 0, 0, 63, 0, 0, 0, 0, 0, 0, 0, 63, 0, 129, 0, 0, 127, 0, 0, 127, 0, 54, 0, 52, 0, 0, 0, 191, 0, 0, 128, 63, 0, 0, 0, 63, 0, 127, 0, 0, 129, 0, 0, 127, 0, 59, 0, 52 ),
@@ -169,11 +101,46 @@ surfaces/0 = {
 "blend_shape_data": [  ],
 "format": 97559,
 "index_count": 36,
-"material": SubResource( 8 ),
+"material": SubResource( 16 ),
 "primitive": 4,
 "skeleton_aabb": [  ],
 "vertex_count": 24
 }
+
+[sub_resource type="Shader" id=18]
+code = "shader_type spatial;
+
+uniform float val = 0.5;
+uniform float x1 = 0.1;
+uniform float x2 = 0.9;
+
+void fragment() 
+{
+	float y = step(val, UV.x);
+	float x = smoothstep(-0.017, 0.925,UV.x) + (smoothstep(0.0, 0.02,UV.x));
+	float z = 1.0 - (smoothstep(x1,x2,UV.x) + smoothstep(1.0 - x1 ,1.0 - x2,UV.x));
+	float m;
+	//m = mod(UV.x,x1);
+	//m = fract(UV.x - x1); // return only the fraction part of a number
+	//m = sign(x1);  // extract the sign of x
+	//y = abs(x);   // return the absolute value of x
+	//m = clamp(UV.x,x1,x2); // constrain x to lie between 0.0 and 1.0
+	//y = min(0.0,x);   // return the lesser of x and 0.0
+	//y = max(0.0,x);   // return the greater of x and 0.0 
+	//ALBEDO = vec3(x);
+	ALPHA = m;
+}"
+
+[sub_resource type="ShaderMaterial" id=19]
+render_priority = 100
+shader = SubResource( 18 )
+shader_param/val = -1.158
+shader_param/x1 = -0.794
+shader_param/x2 = 1.0
+
+[sub_resource type="PlaneMesh" id=20]
+material = SubResource( 19 )
+size = Vector2( 1, 1 )
 
 [node name="TileMap3D" type="Spatial"]
 script = ExtResource( 2 )
@@ -182,24 +149,26 @@ height = 0.5
 [node name="BAD_FOG_TEST" type="Particles" parent="."]
 visible = false
 cast_shadow = 0
-amount = 10000
-speed_scale = 0.5
-process_material = SubResource( 14 )
-draw_pass_1 = SubResource( 15 )
+amount = 2000
+lifetime = 2.8
+preprocess = 200.0
+speed_scale = 0.1
+process_material = SubResource( 3 )
+draw_pass_1 = SubResource( 5 )
 
 [node name="CUBE" type="MeshInstance" parent="."]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 26.0126, -0.367196, 0 )
-mesh = SubResource( 13 )
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 20.2903, -0.367196, 0 )
+mesh = SubResource( 6 )
 material/0 = ExtResource( 7 )
 
 [node name="fog" type="MeshInstance" parent="."]
-transform = Transform( 4, 0, 0, 0, 50, 0, 0, 0, 4, 0, -14.4611, 0 )
-mesh = SubResource( 1 )
+transform = Transform( 4, 0, 0, 0, 50, 0, 0, 0, 4, 0, 0, 0 )
+mesh = ExtResource( 4 )
 material/0 = null
 
 [node name="water" type="MeshInstance" parent="."]
 transform = Transform( 1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, -0.05, 0 )
-mesh = SubResource( 21 )
+mesh = SubResource( 7 )
 material/0 = null
 
 [node name="Particles" type="Particles" parent="water"]
@@ -209,16 +178,16 @@ amount = 20
 lifetime = 0.2
 explosiveness = 1.0
 randomness = 1.0
-process_material = SubResource( 2 )
-draw_pass_1 = SubResource( 4 )
+process_material = SubResource( 8 )
+draw_pass_1 = SubResource( 10 )
 
 [node name="Tiles" type="Spatial" parent="."]
 
 [node name="Cam" type="MeshInstance" parent="."]
 pause_mode = 1
 transform = Transform( 1, 0, 0, 0, 0.707102, 0.707112, 0, -0.707112, 0.707102, 0, 0, 0 )
-mesh = SubResource( 22 )
-material/0 = SubResource( 23 )
+mesh = SubResource( 11 )
+material/0 = SubResource( 12 )
 __meta__ = {
 "_vol_id": 3
 }
@@ -245,18 +214,23 @@ collision_layer = 2
 collision_mask = 2
 
 [node name="Coll" type="CollisionShape" parent="Plane"]
-shape = SubResource( 5 )
+shape = SubResource( 13 )
 
 [node name="Plane" type="MeshInstance" parent="Plane"]
-mesh = SubResource( 6 )
-material/0 = SubResource( 7 )
+mesh = SubResource( 14 )
+material/0 = SubResource( 15 )
 __meta__ = {
 "_vol_id": 5
 }
 
 [node name="TileIndecator" type="MeshInstance" parent="."]
-mesh = SubResource( 9 )
+mesh = SubResource( 17 )
 material/0 = null
 __meta__ = {
 "_vol_id": 6
 }
+
+[node name="MeshInstance" type="MeshInstance" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 0, 0 )
+mesh = SubResource( 20 )
+material/0 = null
