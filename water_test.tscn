@@ -21,7 +21,7 @@ transform = Transform( 0.856356, -0.0278708, 0.515633, -0.417453, 0.550393, 0.72
 light_energy = 0.5
 
 [node name="MeshInstance2" type="MeshInstance" parent="."]
-transform = Transform( 1, 0, 0, 0, 2.7226, 0, 0, 0, 1, 0, 0.231375, 0 )
+transform = Transform( 1, 0, 0, 0, 2.7226, 0, 0, 0, 1, 0, -0.49928, 0 )
 mesh = SubResource( 1 )
 material/0 = SubResource( 2 )
 

@@ -95,6 +95,7 @@ func save_tilemap():
 	file.store_var(layers)
 	file.close()
 
+# loads tilemap on start for testing!
 func load_tilemap():
 	var file = File.new()
 	file.open('res://tilemap_save_test/test1.dat', File.READ)
@@ -111,7 +112,6 @@ func update_navmesh():
 	print('update_navmesh')
 	tiles_node.clear_navmesh()
 	tiles_node.bake_navmesh()
-
 
 func init_grid():
 	plane.scale = Vector3(float(_size)/2 - 0.01, 1, float(_size)/2 - 0.01)
