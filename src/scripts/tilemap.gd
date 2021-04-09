@@ -486,6 +486,7 @@ func ray_is_colliding():
 	tile_label.text = 'Tile %s' % cam.tile_pos
 	if !tile_ind.visible:	
 		tile_ind.show()
+		tile_ind.translation = get_tile_pos(cam.tile_pos)
 		cam.last_pos = cam.tile_pos
 #END
 
