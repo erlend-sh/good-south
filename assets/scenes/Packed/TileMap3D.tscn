@@ -5,7 +5,7 @@
 [ext_resource path="res://assets/textures/clouds_noise.png" type="Texture" id=3]
 [ext_resource path="res://assets/meshes/fog.mesh" type="ArrayMesh" id=4]
 [ext_resource path="res://assets/materials/water.material" type="Material" id=5]
-[ext_resource path="res://assets/scenes/Packed/Camera.gd" type="Script" id=6]
+[ext_resource path="res://src/scripts/Camera.gd" type="Script" id=6]
 [ext_resource path="res://assets/materials/default.material" type="Material" id=7]
 
 [sub_resource type="Curve" id=1]
