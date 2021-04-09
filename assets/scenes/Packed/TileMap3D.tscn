@@ -1,4 +1,4 @@
-[gd_scene load_steps=35 format=2]
+[gd_scene load_steps=34 format=2]
 
 [ext_resource path="res://environment.tres" type="Environment" id=1]
 [ext_resource path="res://src/scripts/tilemap.gd" type="Script" id=2]
@@ -92,13 +92,6 @@ detail_sample_max_error = 1.0
 max_layers = 8
 
 [sub_resource type="ArrayMesh" id=24]
-
-[sub_resource type="NavigationMesh" id=11]
-cell/size = 0.1
-cell/height = 0.1
-agent/height = 0.1
-agent/radius = 0.1
-agent/max_slope = 35.0
 
 [sub_resource type="SphereMesh" id=12]
 radius = 0.05
@@ -202,7 +195,6 @@ material/0 = null
 
 [node name="water" type="MeshInstance" parent="."]
 transform = Transform( 1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, -0.05, 0 )
-visible = false
 mesh = SubResource( 7 )
 material/0 = null
 
@@ -226,9 +218,6 @@ serialized_navmesh_data = PoolByteArray( 84, 69, 83, 77, 1, 0, 0, 0, 0, 0, 0, 0,
 debug_mesh_color = Color( 1, 0.101961, 0.101961, 0.647059 )
 parameters = SubResource( 23 )
 debug_mesh = SubResource( 24 )
-
-[node name="Tiles" type="NavigationMeshInstance" parent="."]
-navmesh = SubResource( 11 )
 
 [node name="Cam" type="MeshInstance" parent="."]
 pause_mode = 1
