@@ -1,4 +1,4 @@
-[gd_scene load_steps=28 format=2]
+[gd_scene load_steps=35 format=2]
 
 [ext_resource path="res://environment.tres" type="Environment" id=1]
 [ext_resource path="res://src/scripts/tilemap.gd" type="Script" id=2]
@@ -7,6 +7,9 @@
 [ext_resource path="res://assets/materials/water.material" type="Material" id=5]
 [ext_resource path="res://src/scripts/Camera.gd" type="Script" id=6]
 [ext_resource path="res://assets/materials/default.material" type="Material" id=7]
+[ext_resource path="res://addons/godot-navigation-lite/bin/navmesh_parameters.gdns" type="Script" id=8]
+[ext_resource path="res://addons/godot-navigation-lite/bin/navigation.gdnlib" type="GDNativeLibrary" id=9]
+[ext_resource path="res://addons/godot-navigation-lite/bin/detour_navigation.gdns" type="Script" id=10]
 
 [sub_resource type="Curve" id=1]
 max_value = 10.0
@@ -67,34 +70,64 @@ emission_on_uv2 = false
 material = SubResource( 9 )
 size = Vector2( 0.1, 0.1 )
 
-[sub_resource type="SphereMesh" id=11]
+[sub_resource type="NativeScript" id=22]
+class_name = "DetourNavigationMesh"
+library = ExtResource( 9 )
+
+[sub_resource type="Resource" id=23]
+script = ExtResource( 8 )
+cell_size = 0.1
+tile_size = 8
+cell_height = 0.1
+agent_height = 0.0
+agent_radius = 0.0
+agent_max_climb = 0.1
+agent_max_slope = 35.0
+region_min_size = 1.0
+region_merge_size = 20.0
+edge_max_length = 12.0
+edge_max_error = 1.3
+detail_sample_distance = 6.0
+detail_sample_max_error = 1.0
+max_layers = 8
+
+[sub_resource type="ArrayMesh" id=24]
+
+[sub_resource type="NavigationMesh" id=11]
+cell/size = 0.1
+cell/height = 0.1
+agent/height = 0.1
+agent/radius = 0.1
+agent/max_slope = 35.0
+
+[sub_resource type="SphereMesh" id=12]
 radius = 0.05
 height = 0.1
 
-[sub_resource type="SpatialMaterial" id=12]
+[sub_resource type="SpatialMaterial" id=13]
 render_priority = 20
 flags_transparent = true
 flags_unshaded = true
 albedo_color = Color( 1, 0.376471, 0.376471, 0.498039 )
 
-[sub_resource type="ConcavePolygonShape" id=13]
+[sub_resource type="ConcavePolygonShape" id=14]
 data = PoolVector3Array( 1, 0, 1, -1, 0, 1, 1, 0, -1, -1, 0, 1, -1, 0, -1, 1, 0, -1 )
 
-[sub_resource type="PlaneMesh" id=14]
+[sub_resource type="PlaneMesh" id=15]
 
-[sub_resource type="SpatialMaterial" id=15]
+[sub_resource type="SpatialMaterial" id=16]
 render_priority = 100
 flags_transparent = true
 flags_unshaded = true
 albedo_color = Color( 1, 1, 1, 0.0470588 )
 
-[sub_resource type="SpatialMaterial" id=16]
+[sub_resource type="SpatialMaterial" id=17]
 render_priority = 15
 flags_transparent = true
 flags_unshaded = true
 albedo_color = Color( 1, 0.164706, 0, 0.45098 )
 
-[sub_resource type="ArrayMesh" id=17]
+[sub_resource type="ArrayMesh" id=18]
 surfaces/0 = {
 "aabb": AABB( -0.5, 0, -0.5, 1, 1.00001, 1.00001 ),
 "array_data": PoolByteArray( 0, 0, 0, 191, 0, 0, 128, 63, 0, 0, 0, 63, 129, 0, 0, 0, 0, 127, 0, 127, 0, 57, 0, 60, 0, 0, 0, 191, 0, 0, 0, 0, 0, 0, 0, 191, 129, 0, 0, 0, 0, 127, 0, 127, 0, 54, 0, 58, 0, 0, 0, 191, 0, 0, 0, 0, 0, 0, 0, 63, 129, 0, 0, 0, 0, 127, 0, 127, 0, 54, 0, 60, 0, 0, 0, 191, 0, 0, 128, 63, 0, 0, 0, 191, 0, 0, 129, 0, 0, 127, 0, 127, 0, 57, 0, 58, 0, 0, 0, 63, 0, 0, 0, 0, 0, 0, 0, 191, 0, 0, 129, 0, 0, 127, 0, 127, 0, 54, 0, 56, 0, 0, 0, 191, 0, 0, 0, 0, 0, 0, 0, 191, 0, 0, 129, 0, 0, 127, 0, 127, 0, 54, 0, 58, 0, 0, 0, 63, 0, 0, 128, 63, 0, 0, 0, 191, 127, 0, 0, 0, 0, 127, 0, 127, 0, 57, 0, 56, 0, 0, 0, 63, 0, 0, 0, 0, 0, 0, 0, 63, 127, 0, 0, 0, 0, 127, 0, 127, 0, 54, 0, 52, 0, 0, 0, 63, 0, 0, 0, 0, 0, 0, 0, 191, 127, 0, 0, 0, 0, 127, 0, 127, 0, 54, 0, 56, 0, 0, 0, 63, 0, 0, 128, 63, 0, 0, 0, 63, 0, 0, 127, 0, 0, 127, 0, 127, 0, 57, 0, 52, 0, 0, 0, 191, 0, 0, 0, 0, 0, 0, 0, 63, 0, 0, 127, 0, 0, 127, 0, 127, 0, 54, 0, 0, 0, 0, 0, 63, 0, 0, 0, 0, 0, 0, 0, 63, 0, 0, 127, 0, 0, 127, 0, 127, 0, 54, 0, 52, 0, 0, 0, 63, 0, 0, 0, 0, 0, 0, 0, 191, 0, 129, 0, 0, 127, 0, 0, 127, 0, 54, 0, 56, 0, 0, 0, 191, 0, 0, 0, 0, 0, 0, 0, 63, 0, 129, 0, 0, 127, 0, 0, 127, 0, 48, 0, 52, 0, 0, 0, 191, 0, 0, 0, 0, 0, 0, 0, 191, 0, 129, 0, 0, 127, 0, 0, 127, 0, 48, 0, 56, 0, 0, 0, 191, 0, 0, 128, 63, 0, 0, 0, 191, 0, 127, 0, 0, 129, 0, 0, 127, 0, 59, 0, 56, 0, 0, 0, 63, 0, 0, 128, 63, 0, 0, 0, 63, 0, 127, 0, 0, 129, 0, 0, 127, 0, 57, 0, 52, 0, 0, 0, 63, 0, 0, 128, 63, 0, 0, 0, 191, 0, 127, 0, 0, 129, 0, 0, 127, 0, 57, 0, 56, 0, 0, 0, 191, 0, 0, 128, 63, 0, 0, 0, 191, 129, 0, 0, 0, 0, 127, 0, 127, 0, 57, 0, 58, 0, 0, 0, 63, 0, 0, 128, 63, 0, 0, 0, 191, 0, 0, 129, 0, 0, 127, 0, 127, 0, 57, 0, 56, 0, 0, 0, 63, 0, 0, 128, 63, 0, 0, 0, 63, 127, 0, 0, 0, 0, 127, 0, 127, 0, 57, 0, 52, 0, 0, 0, 191, 0, 0, 128, 63, 0, 0, 0, 63, 0, 0, 127, 0, 0, 127, 0, 127, 0, 57, 0, 0, 0, 0, 0, 63, 0, 0, 0, 0, 0, 0, 0, 63, 0, 129, 0, 0, 127, 0, 0, 127, 0, 54, 0, 52, 0, 0, 0, 191, 0, 0, 128, 63, 0, 0, 0, 63, 0, 127, 0, 0, 129, 0, 0, 127, 0, 59, 0, 52 ),
@@ -102,13 +135,13 @@ surfaces/0 = {
 "blend_shape_data": [  ],
 "format": 97559,
 "index_count": 36,
-"material": SubResource( 16 ),
+"material": SubResource( 17 ),
 "primitive": 4,
 "skeleton_aabb": [  ],
 "vertex_count": 24
 }
 
-[sub_resource type="Shader" id=18]
+[sub_resource type="Shader" id=19]
 code = "shader_type spatial;
 
 uniform float val = 0.5;
@@ -132,15 +165,15 @@ void fragment()
 	ALPHA = m;
 }"
 
-[sub_resource type="ShaderMaterial" id=19]
+[sub_resource type="ShaderMaterial" id=20]
 render_priority = 100
-shader = SubResource( 18 )
+shader = SubResource( 19 )
 shader_param/val = -1.158
 shader_param/x1 = -0.794
 shader_param/x2 = 1.0
 
-[sub_resource type="PlaneMesh" id=20]
-material = SubResource( 19 )
+[sub_resource type="PlaneMesh" id=21]
+material = SubResource( 20 )
 size = Vector2( 1, 1 )
 
 [node name="TileMap3D" type="Spatial"]
@@ -169,6 +202,7 @@ material/0 = null
 
 [node name="water" type="MeshInstance" parent="."]
 transform = Transform( 1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, -0.05, 0 )
+visible = false
 mesh = SubResource( 7 )
 material/0 = null
 
@@ -182,13 +216,25 @@ randomness = 1.0
 process_material = SubResource( 8 )
 draw_pass_1 = SubResource( 10 )
 
-[node name="Tiles" type="Spatial" parent="."]
+[node name="Nav" type="Spatial" parent="."]
+script = ExtResource( 10 )
+auto_add_remove_objects = false
+
+[node name="Tiles" type="Spatial" parent="Nav"]
+script = SubResource( 22 )
+serialized_navmesh_data = PoolByteArray( 84, 69, 83, 77, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 205, 204, 76, 63, 205, 204, 76, 63, 1, 0, 0, 0, 0, 0, 64, 0 )
+debug_mesh_color = Color( 1, 0.101961, 0.101961, 0.647059 )
+parameters = SubResource( 23 )
+debug_mesh = SubResource( 24 )
+
+[node name="Tiles" type="NavigationMeshInstance" parent="."]
+navmesh = SubResource( 11 )
 
 [node name="Cam" type="MeshInstance" parent="."]
 pause_mode = 1
 transform = Transform( 1, 0, 0, 0, 0.707102, 0.707112, 0, -0.707112, 0.707102, 0, 0, 0 )
-mesh = SubResource( 11 )
-material/0 = SubResource( 12 )
+mesh = SubResource( 12 )
+material/0 = SubResource( 13 )
 script = ExtResource( 6 )
 __meta__ = {
 "_vol_id": 3
@@ -201,7 +247,6 @@ current = true
 size = 15.0
 
 [node name="Ray" type="RayCast" parent="."]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
 enabled = true
 collision_mask = 2
 
@@ -217,17 +262,17 @@ collision_layer = 2
 collision_mask = 2
 
 [node name="Coll" type="CollisionShape" parent="Plane"]
-shape = SubResource( 13 )
+shape = SubResource( 14 )
 
 [node name="Plane" type="MeshInstance" parent="Plane"]
-mesh = SubResource( 14 )
-material/0 = SubResource( 15 )
+mesh = SubResource( 15 )
+material/0 = SubResource( 16 )
 __meta__ = {
 "_vol_id": 5
 }
 
 [node name="TileIndecator" type="MeshInstance" parent="."]
-mesh = SubResource( 17 )
+mesh = SubResource( 18 )
 material/0 = null
 __meta__ = {
 "_vol_id": 6
@@ -235,5 +280,5 @@ __meta__ = {
 
 [node name="MeshInstance" type="MeshInstance" parent="."]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 0, 0 )
-mesh = SubResource( 20 )
+mesh = SubResource( 21 )
 material/0 = null

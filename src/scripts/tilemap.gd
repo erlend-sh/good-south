@@ -1,4 +1,4 @@
-extends Node
+extends Spatial
 
 const _dirs := [Vector3.LEFT, Vector3.FORWARD, Vector3.RIGHT, Vector3.BACK]
 const LEFT        := 0
@@ -32,7 +32,7 @@ onready var mesh       = get_node('Plane/Plane')                          as Mes
 onready var cam        = get_node('Cam')                                  as MeshInstance
 onready var tile_ind   = get_node('TileIndecator')                        as MeshInstance
 onready var grid       = ImmediateGeometry.new()                          as ImmediateGeometry
-onready var tiles_node = get_node('Tiles')                                as Spatial
+onready var tiles_node = get_node('Nav/Tiles')                            as Spatial
 onready var view_gizmo = get_node('../../../TopRight/Gizmo/Viewport/Cam') as Spatial
 onready var mat        = SpatialMaterial.new()                            as SpatialMaterial
 onready var tile_label = get_node('../../../Left/Tile')                   as Label
@@ -61,12 +61,14 @@ var layers := {
 }
 
 func _ready():
+	G.tilemap = self
 	import_tiles(tiles_scene)
 	init_grid()
 	draw_grid()
 	draw_axes()
 	sort_layers()
 	view_gizmo.rotation_degrees = cam.rotation_degrees
+	load_tilemap()
 #END
 
 # {'sand': [solo, corner, ...]}
@@ -81,6 +83,35 @@ func import_tiles(_scene : Spatial):
 			tiles[_child.name] = _node
 	_scene.queue_free()
 #END
+
+# save tilemap [ctrl / S]
+func save_tilemap():
+	print('save')
+	var packed_scene = PackedScene.new()
+	packed_scene.pack(tiles_node)
+	print(ResourceSaver.save('res://tilemap_save_test/test1.tscn', packed_scene))
+	var file = File.new()
+	file.open('res://tilemap_save_test/test1.dat', File.WRITE)
+	file.store_var(layers)
+	file.close()
+
+func load_tilemap():
+	var file = File.new()
+	file.open('res://tilemap_save_test/test1.dat', File.READ)
+	var _layers = file.get_var()
+	file.close()
+	for _layer in _layers.keys():
+		for _pos in _layers[_layer]['tiles']:
+			var _name = _layers[_layer]['tiles'][_pos][TILE_NAME]
+			var _l = int(_layer.replace('layer', ''))
+			draw_tile(_pos, _l, _name )
+
+# update navmesh [ctrl / E]
+func update_navmesh():
+	print('update_navmesh')
+	tiles_node.clear_navmesh()
+	tiles_node.bake_navmesh()
+
 
 func init_grid():
 	plane.scale = Vector3(float(_size)/2 - 0.01, 1, float(_size)/2 - 0.01)
@@ -176,6 +207,10 @@ func draw_tile(_tile_pos : Vector3, _layer := cur_layer, _tile_name := cur_tile_
 					update_tile(_neighs[i], _name)
 	var _data = get_tile_data(get_neighs(_tile_pos, _layer, _tile_name, inc_ind), _tile_name)
 	tiles_node.add_child(_data[TILE_NODE])
+	_data[TILE_NODE].set_owner(tiles_node)
+	_data[TILE_NODE].get_child(0).set_owner(tiles_node)
+	_data[TILE_NODE].get_child(0).get_child(0).set_owner(tiles_node)
+	_data[TILE_NODE].name = str(_tile_pos)
 	_data[TILE_NODE].translation = get_tile_pos(_tile_pos)
 	_data[TILE_NODE].rotation_degrees.y = _data[TILE_ROT]
 	_data[TILE_NEIGHS] = get_neighs(_tile_pos, _layer, _tile_name, inc_ind)
@@ -185,7 +220,7 @@ func draw_tile(_tile_pos : Vector3, _layer := cur_layer, _tile_name := cur_tile_
 		var _neigh = _tile_pos + _dirs[i]
 		if has_tile(_neigh):
 			if _tiles[_neigh][TILE_NAME] == _tile_name:
-				update_tile(_neigh)
+				update_tile(_neigh, _tile_name)
 #END
 
 func erase_tile(_tile_pos: Vector3, _layer := cur_layer):
@@ -215,6 +250,7 @@ func update_tile(_tile_pos : Vector3, _tile_name := cur_tile_name):
 	_tiles[_tile_pos][TILE_ROT] = _data[TILE_ROT]
 	_tiles[_tile_pos][TILE_IND] = _data[TILE_IND]
 	_tiles[_tile_pos][TILE_NEIGHS] = _neighs
+	_tiles[_tile_pos][TILE_NODE].get_child(0).get_child(0).shape = _data[TILE_NODE].get_child(0).get_child(0).shape
 	_data[TILE_NODE].free()
 #END
 
