@@ -203,7 +203,7 @@ func erase_tile(_tile_pos: Vector3, _layer := cur_layer):
 					_neighs.append(_neigh)
 		if _neighs.size() > 0:
 			for _n in _neighs:
-				update_tile(_n)
+				update_tile(_n, _name)
 #END
 
 func update_tile(_tile_pos : Vector3, _tile_name := cur_tile_name):
