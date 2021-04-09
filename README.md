@@ -14,7 +14,7 @@ As for the gameplay, we will incorporate more RPG-like elements with a linear st
 
 ![image](https://user-images.githubusercontent.com/583842/113930919-2bf09900-97f2-11eb-8bc0-bdf1615c95c3.png)
 
-**Early demo of level editor:** [Open Video](https://user-images.githubusercontent.com/583842/113930793-06638f80-97f2-11eb-9c2d-cebda16924e5.mp4)
+**Early demo of level editor:** [Open Video](https://user-images.githubusercontent.com/53877170/114151762-c0a3e580-991d-11eb-80d2-7f760fe3f4a3.mp4)
 
 
 
