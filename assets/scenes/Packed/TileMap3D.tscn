@@ -93,34 +93,34 @@ max_layers = 8
 
 [sub_resource type="ArrayMesh" id=24]
 
-[sub_resource type="SphereMesh" id=12]
+[sub_resource type="SphereMesh" id=26]
 radius = 0.05
 height = 0.1
 
-[sub_resource type="SpatialMaterial" id=13]
+[sub_resource type="SpatialMaterial" id=27]
 render_priority = 20
 flags_transparent = true
 flags_unshaded = true
 albedo_color = Color( 1, 0.376471, 0.376471, 0.498039 )
 
-[sub_resource type="ConcavePolygonShape" id=14]
+[sub_resource type="ConcavePolygonShape" id=28]
 data = PoolVector3Array( 1, 0, 1, -1, 0, 1, 1, 0, -1, -1, 0, 1, -1, 0, -1, 1, 0, -1 )
 
-[sub_resource type="PlaneMesh" id=15]
+[sub_resource type="PlaneMesh" id=29]
 
-[sub_resource type="SpatialMaterial" id=16]
+[sub_resource type="SpatialMaterial" id=30]
 render_priority = 100
 flags_transparent = true
 flags_unshaded = true
 albedo_color = Color( 1, 1, 1, 0.0470588 )
 
-[sub_resource type="SpatialMaterial" id=17]
+[sub_resource type="SpatialMaterial" id=31]
 render_priority = 15
 flags_transparent = true
 flags_unshaded = true
 albedo_color = Color( 1, 0.164706, 0, 0.45098 )
 
-[sub_resource type="ArrayMesh" id=18]
+[sub_resource type="ArrayMesh" id=32]
 surfaces/0 = {
 "aabb": AABB( -0.5, 0, -0.5, 1, 1.00001, 1.00001 ),
 "array_data": PoolByteArray( 0, 0, 0, 191, 0, 0, 128, 63, 0, 0, 0, 63, 129, 0, 0, 0, 0, 127, 0, 127, 0, 57, 0, 60, 0, 0, 0, 191, 0, 0, 0, 0, 0, 0, 0, 191, 129, 0, 0, 0, 0, 127, 0, 127, 0, 54, 0, 58, 0, 0, 0, 191, 0, 0, 0, 0, 0, 0, 0, 63, 129, 0, 0, 0, 0, 127, 0, 127, 0, 54, 0, 60, 0, 0, 0, 191, 0, 0, 128, 63, 0, 0, 0, 191, 0, 0, 129, 0, 0, 127, 0, 127, 0, 57, 0, 58, 0, 0, 0, 63, 0, 0, 0, 0, 0, 0, 0, 191, 0, 0, 129, 0, 0, 127, 0, 127, 0, 54, 0, 56, 0, 0, 0, 191, 0, 0, 0, 0, 0, 0, 0, 191, 0, 0, 129, 0, 0, 127, 0, 127, 0, 54, 0, 58, 0, 0, 0, 63, 0, 0, 128, 63, 0, 0, 0, 191, 127, 0, 0, 0, 0, 127, 0, 127, 0, 57, 0, 56, 0, 0, 0, 63, 0, 0, 0, 0, 0, 0, 0, 63, 127, 0, 0, 0, 0, 127, 0, 127, 0, 54, 0, 52, 0, 0, 0, 63, 0, 0, 0, 0, 0, 0, 0, 191, 127, 0, 0, 0, 0, 127, 0, 127, 0, 54, 0, 56, 0, 0, 0, 63, 0, 0, 128, 63, 0, 0, 0, 63, 0, 0, 127, 0, 0, 127, 0, 127, 0, 57, 0, 52, 0, 0, 0, 191, 0, 0, 0, 0, 0, 0, 0, 63, 0, 0, 127, 0, 0, 127, 0, 127, 0, 54, 0, 0, 0, 0, 0, 63, 0, 0, 0, 0, 0, 0, 0, 63, 0, 0, 127, 0, 0, 127, 0, 127, 0, 54, 0, 52, 0, 0, 0, 63, 0, 0, 0, 0, 0, 0, 0, 191, 0, 129, 0, 0, 127, 0, 0, 127, 0, 54, 0, 56, 0, 0, 0, 191, 0, 0, 0, 0, 0, 0, 0, 63, 0, 129, 0, 0, 127, 0, 0, 127, 0, 48, 0, 52, 0, 0, 0, 191, 0, 0, 0, 0, 0, 0, 0, 191, 0, 129, 0, 0, 127, 0, 0, 127, 0, 48, 0, 56, 0, 0, 0, 191, 0, 0, 128, 63, 0, 0, 0, 191, 0, 127, 0, 0, 129, 0, 0, 127, 0, 59, 0, 56, 0, 0, 0, 63, 0, 0, 128, 63, 0, 0, 0, 63, 0, 127, 0, 0, 129, 0, 0, 127, 0, 57, 0, 52, 0, 0, 0, 63, 0, 0, 128, 63, 0, 0, 0, 191, 0, 127, 0, 0, 129, 0, 0, 127, 0, 57, 0, 56, 0, 0, 0, 191, 0, 0, 128, 63, 0, 0, 0, 191, 129, 0, 0, 0, 0, 127, 0, 127, 0, 57, 0, 58, 0, 0, 0, 63, 0, 0, 128, 63, 0, 0, 0, 191, 0, 0, 129, 0, 0, 127, 0, 127, 0, 57, 0, 56, 0, 0, 0, 63, 0, 0, 128, 63, 0, 0, 0, 63, 127, 0, 0, 0, 0, 127, 0, 127, 0, 57, 0, 52, 0, 0, 0, 191, 0, 0, 128, 63, 0, 0, 0, 63, 0, 0, 127, 0, 0, 127, 0, 127, 0, 57, 0, 0, 0, 0, 0, 63, 0, 0, 0, 0, 0, 0, 0, 63, 0, 129, 0, 0, 127, 0, 0, 127, 0, 54, 0, 52, 0, 0, 0, 191, 0, 0, 128, 63, 0, 0, 0, 63, 0, 127, 0, 0, 129, 0, 0, 127, 0, 59, 0, 52 ),
@@ -128,7 +128,7 @@ surfaces/0 = {
 "blend_shape_data": [  ],
 "format": 97559,
 "index_count": 36,
-"material": SubResource( 17 ),
+"material": SubResource( 31 ),
 "primitive": 4,
 "skeleton_aabb": [  ],
 "vertex_count": 24
@@ -222,16 +222,16 @@ debug_mesh = SubResource( 24 )
 
 [node name="Cam" type="MeshInstance" parent="."]
 pause_mode = 1
-transform = Transform( 1, 0, 0, 0, 0.707102, 0.707112, 0, -0.707112, 0.707102, 0, 0, 0 )
-mesh = SubResource( 12 )
-material/0 = SubResource( 13 )
+transform = Transform( 0.707107, -0.5, 0.5, 0, 0.707107, 0.707107, -0.707107, -0.5, 0.5, 0, 0, 0 )
+mesh = SubResource( 26 )
+material/0 = SubResource( 27 )
 script = ExtResource( 6 )
 __meta__ = {
 "_vol_id": 3
 }
 
 [node name="3dCam" type="Camera" parent="Cam"]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 15 )
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 10 )
 environment = ExtResource( 1 )
 current = true
 size = 15.0
@@ -252,17 +252,17 @@ collision_layer = 2
 collision_mask = 2
 
 [node name="Coll" type="CollisionShape" parent="Plane"]
-shape = SubResource( 14 )
+shape = SubResource( 28 )
 
 [node name="Plane" type="MeshInstance" parent="Plane"]
-mesh = SubResource( 15 )
-material/0 = SubResource( 16 )
+mesh = SubResource( 29 )
+material/0 = SubResource( 30 )
 __meta__ = {
 "_vol_id": 5
 }
 
 [node name="TileIndecator" type="MeshInstance" parent="."]
-mesh = SubResource( 18 )
+mesh = SubResource( 32 )
 material/0 = null
 __meta__ = {
 "_vol_id": 6

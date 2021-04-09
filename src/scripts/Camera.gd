@@ -11,7 +11,7 @@ onready var viewport = get_node('../../../VP') as Viewport
 var tile_pos   := Vector3.ZERO
 var last_pos   := Vector3.ZERO
 var _pos       := Vector3.ZERO
-var _rot       := Vector3(-45, 0, 0)
+var _rot       := Vector3(-45, 45, 0)
 var is_motion  := false
 var is_draw    := false
 var is_erase   := false
@@ -22,6 +22,7 @@ var ray_length := 10000
 
 
 func _ready() -> void:
+	G.camera = self
 	match G.mode:
 		G.EDIT_MODE:
 			_init_edit_mode()
@@ -41,34 +42,51 @@ func _init_game_mode() -> void:
 #END
 
 func _physics_process(delta: float) -> void:
-	if !is_rot && !is_pan:
-		var mouse = get_viewport().get_mouse_position()
-		var from = camera.project_ray_origin(mouse)
-		var to = from + camera.project_ray_normal(mouse) * ray_length
-		ray_cast.cast_to = to
-		ray_cast.translation = from
-	if can_draw:
-		if ray_cast.is_colliding() && (!is_rot && !is_pan):
-			var _pos = ray_cast.get_collision_point().floor()
-			_pos.y = tilemap.level * tilemap.height
-			_pos.x += 0.5
-			_pos.z += 0.5
-			tile_pos = _pos + Vector3(tilemap._size/2 - 0.5, 0, tilemap._size/2 - 0.5)
-			tilemap.ray_is_colliding()
-		else:
-			tilemap.ray_not_colliding()
+	if G.mode == G.EDIT_MODE: # Level Editor Mode
+		if !is_rot && !is_pan:
+			var mouse = get_viewport().get_mouse_position()
+			var from = camera.project_ray_origin(mouse)
+			var to = from + camera.project_ray_normal(mouse) * ray_length
+			ray_cast.cast_to = to
+			ray_cast.translation = from
+		if can_draw:
+			if ray_cast.is_colliding() && (!is_rot && !is_pan):
+				var _pos = ray_cast.get_collision_point().floor()
+				_pos.y = tilemap.level * tilemap.height
+				_pos.x += 0.5
+				_pos.z += 0.5
+				tile_pos = _pos + Vector3(tilemap._size/2 - 0.5, 0, tilemap._size/2 - 0.5)
+				tilemap.ray_is_colliding()
+			else:
+				tilemap.ray_not_colliding()
+		#ON tile mouse enter
+		if last_pos != tile_pos:
+			tilemap._on_tile_mouse_enter()
+			last_pos = tile_pos
+		if is_motion:
+			tilemap.view_gizmo.rotation_degrees = rotation_degrees
+	else: # Game Mode
+		var axis = get_input_axis()
+		_pos -= ((transform.basis.z - transform.basis.y) * axis.y + transform.basis.x * axis.x) * 0.2
+		_pos.x = clamp(_pos.x, -tilemap._size/2, tilemap._size/2)
+		_pos.z = clamp(_pos.z, -tilemap._size/2, tilemap._size/2)
+
+	# code for both game and level editor
 	if !_pos.is_equal_approx(translation):
 		translation += (_pos - translation) * pan_spd
 	if !_rot.is_equal_approx(rotation_degrees):
 		rotation_degrees.y += (_rot.y - rotation_degrees.y) * rot_spd
 		rotation_degrees.x += (_rot.x - rotation_degrees.x) * rot_spd
-	#ON tile mouse enter
-	if last_pos != tile_pos:
-		tilemap._on_tile_mouse_enter()
-		last_pos = tile_pos
-	if is_motion:
-		tilemap.view_gizmo.rotation_degrees = rotation_degrees
 #END
+
+func get_input_axis() -> Vector2:
+	var _axis = Vector2.ZERO
+	_axis.x = int(Input.get_action_strength('a')) - int(Input.get_action_strength('d'))
+	_axis.y = int(Input.get_action_strength('w')) - int(Input.get_action_strength('s'))
+	if _axis.length() > 1:
+		_axis = _axis.normalized()
+	return _axis
+
 
 func _input(event: InputEvent) -> void:
 	if G.mode == G.EDIT_MODE:
