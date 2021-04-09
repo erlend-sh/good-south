@@ -1,10 +1,11 @@
-[gd_scene load_steps=27 format=2]
+[gd_scene load_steps=28 format=2]
 
 [ext_resource path="res://environment.tres" type="Environment" id=1]
 [ext_resource path="res://src/scripts/tilemap.gd" type="Script" id=2]
 [ext_resource path="res://assets/textures/clouds_noise.png" type="Texture" id=3]
 [ext_resource path="res://assets/meshes/fog.mesh" type="ArrayMesh" id=4]
 [ext_resource path="res://assets/materials/water.material" type="Material" id=5]
+[ext_resource path="res://assets/scenes/Packed/Camera.gd" type="Script" id=6]
 [ext_resource path="res://assets/materials/default.material" type="Material" id=7]
 
 [sub_resource type="Curve" id=1]
@@ -144,7 +145,6 @@ size = Vector2( 1, 1 )
 
 [node name="TileMap3D" type="Spatial"]
 script = ExtResource( 2 )
-height = 0.5
 
 [node name="BAD_FOG_TEST" type="Particles" parent="."]
 visible = false
@@ -158,6 +158,7 @@ draw_pass_1 = SubResource( 5 )
 
 [node name="CUBE" type="MeshInstance" parent="."]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 20.2903, -0.367196, 0 )
+visible = false
 mesh = SubResource( 6 )
 material/0 = ExtResource( 7 )
 
@@ -188,6 +189,7 @@ pause_mode = 1
 transform = Transform( 1, 0, 0, 0, 0.707102, 0.707112, 0, -0.707112, 0.707102, 0, 0, 0 )
 mesh = SubResource( 11 )
 material/0 = SubResource( 12 )
+script = ExtResource( 6 )
 __meta__ = {
 "_vol_id": 3
 }
@@ -198,7 +200,8 @@ environment = ExtResource( 1 )
 current = true
 size = 15.0
 
-[node name="RayCast" type="RayCast" parent="."]
+[node name="Ray" type="RayCast" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
 enabled = true
 collision_mask = 2
 

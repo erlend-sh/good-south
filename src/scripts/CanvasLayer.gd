@@ -1,19 +1,16 @@
 extends MarginContainer
 
-
 onready var layers_scroll = get_node('Left/LayersPanel/VBox/Scroll') as ScrollContainer
 onready var add_layer_button = get_node('Left/LayersPanel/VBox/Header/Add') as Button
 onready var del_layer_button = get_node('Left/LayersPanel/VBox/Header/Del') as Button
 onready var layers_panel_visibility_button = get_node('Left/LayersPanel/VBox/Header/Vis') as Button
 onready var layers_container = get_node('Left/LayersPanel/VBox/Scroll/Layers_container') as VBoxContainer
 onready var tilemap = get_node('VC/VP/Tilemap') as Spatial
-onready var tile_button = preload('res://assets/scenes/Packed/TileButton.tscn')
-
-onready var layer = preload('res://assets/scenes/Packed/Layer.tscn')
-
-onready var canvas_layer : MarginContainer = self
+onready var viewport = get_node('VC/VP') as Viewport
 onready var tiles_container = get_node('Left/TilesPanel/Scroll/TilesContainer') as VBoxContainer
 
+onready var layer = preload('res://assets/scenes/Packed/Layer.tscn')
+onready var tile_button = preload('res://assets/scenes/Packed/TileButton.tscn')
 onready var layers_group = preload('res://src/Groups/LayersGroup.tres') as ButtonGroup
 
 var layers_panel_visible := true
@@ -34,14 +31,17 @@ func _ready() -> void:
 			child.connect('mouse_entered', tilemap, '_on_UI_mouse_enter_exit', [true])
 			child.connect('mouse_exited', tilemap, '_on_UI_mouse_enter_exit', [false])
 			if child.get_index() == 0:
-				child.connect('toggled', canvas_layer, '_on_layer_toggled')
+				child.connect('toggled', self, '_on_layer_toggled')
 				child.text = _name
 			else:
-				child.connect('toggled', canvas_layer, '_on_layer_visibility_toggled', [child])
+				child.connect('toggled', self, '_on_layer_visibility_toggled', [child])
 				child.pressed = _visibility
 			if tilemap.cur_layer == i:
 				if child.get_index() == 0:
 					child.pressed = true
+	for _node in get_tree().get_nodes_in_group('UI'):
+		_node.connect('mouse_entered', tilemap, '_on_UI_mouse_enter_exit', [true])
+		_node.connect('mouse_exited', tilemap, '_on_UI_mouse_enter_exit', [false])
 #END
 
 #Layer panel visibility
@@ -110,16 +110,16 @@ func add_layer():
 		child.connect('mouse_entered', tilemap, '_on_UI_mouse_enter_exit', [true])
 		child.connect('mouse_exited', tilemap, '_on_UI_mouse_enter_exit', [false])
 		if child.get_index() == 0:
-			child.connect('toggled', canvas_layer, '_on_layer_toggled')
+			child.connect('toggled', self, '_on_layer_toggled')
 			child.text = 'Layer %s' % (tilemap.layers.keys().size() - 1)
 			child.pressed = true
 		else:
-			child.connect('toggled', canvas_layer, '_on_layer_visibility_toggled', [child])
+			child.connect('toggled', self, '_on_layer_visibility_toggled', [child])
 			child.pressed = true
 	tilemap.sort_layers()
 #END
 
-func del_layer(): # NEEEEEEEEDS Fix 
+func del_layer(): # NEEEEEEEEDS Fix
 	var _l = tilemap.cur_layer
 	if tilemap.layers.keys().size() == 1:
 		return
@@ -157,6 +157,6 @@ func del_layer(): # NEEEEEEEEDS Fix
 
 func _on_screen_resize():
 	var _s = get_viewport().size
-	get_node('VC/VP').size = _s
+	viewport.size = _s
 	rect_size = _s
 #END
