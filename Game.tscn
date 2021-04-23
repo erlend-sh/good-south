@@ -314,7 +314,6 @@ size_flags_vertical = 3
 __meta__ = {
 "_edit_use_anchors_": false
 }
-
 [connection signal="toggled" from="TopRight/VBox/GridPanel/HBox/Grid" to="VC/VP/Tilemap" method="_on_Grid_toggled"]
 [connection signal="toggled" from="TopRight/VBox/GridPanel/HBox/X" to="VC/VP/Tilemap" method="_on_axis_toggle" binds= [ 0 ]]
 [connection signal="toggled" from="TopRight/VBox/GridPanel/HBox/Z" to="VC/VP/Tilemap" method="_on_axis_toggle" binds= [ 1 ]]
