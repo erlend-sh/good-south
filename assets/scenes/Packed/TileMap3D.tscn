@@ -47,7 +47,7 @@ size = Vector2( 2, 2 )
 
 [sub_resource type="CubeMesh" id=6]
 
-[sub_resource type="QuadMesh" id=25]
+[sub_resource type="QuadMesh" id=7]
 material = ExtResource( 5 )
 size = Vector2( 100, 100 )
 
@@ -70,17 +70,17 @@ emission_on_uv2 = false
 material = SubResource( 9 )
 size = Vector2( 0.1, 0.1 )
 
-[sub_resource type="NativeScript" id=22]
+[sub_resource type="NativeScript" id=11]
 class_name = "DetourNavigationMesh"
 library = ExtResource( 9 )
 
-[sub_resource type="Resource" id=23]
+[sub_resource type="Resource" id=12]
 script = ExtResource( 8 )
 cell_size = 0.1
-tile_size = 8
+tile_size = 64
 cell_height = 0.1
-agent_height = 0.0
-agent_radius = 0.0
+agent_height = 0.1
+agent_radius = 0.01
 agent_max_climb = 0.1
 agent_max_slope = 35.0
 region_min_size = 1.0
@@ -93,34 +93,34 @@ max_layers = 8
 
 [sub_resource type="ArrayMesh" id=24]
 
-[sub_resource type="SphereMesh" id=26]
+[sub_resource type="SphereMesh" id=14]
 radius = 0.05
 height = 0.1
 
-[sub_resource type="SpatialMaterial" id=27]
+[sub_resource type="SpatialMaterial" id=15]
 render_priority = 20
 flags_transparent = true
 flags_unshaded = true
 albedo_color = Color( 1, 0.376471, 0.376471, 0.498039 )
 
-[sub_resource type="ConcavePolygonShape" id=28]
+[sub_resource type="ConcavePolygonShape" id=16]
 data = PoolVector3Array( 1, 0, 1, -1, 0, 1, 1, 0, -1, -1, 0, 1, -1, 0, -1, 1, 0, -1 )
 
-[sub_resource type="PlaneMesh" id=29]
+[sub_resource type="PlaneMesh" id=17]
 
-[sub_resource type="SpatialMaterial" id=30]
+[sub_resource type="SpatialMaterial" id=18]
 render_priority = 100
 flags_transparent = true
 flags_unshaded = true
 albedo_color = Color( 1, 1, 1, 0.0470588 )
 
-[sub_resource type="SpatialMaterial" id=31]
+[sub_resource type="SpatialMaterial" id=19]
 render_priority = 15
 flags_transparent = true
 flags_unshaded = true
 albedo_color = Color( 1, 0.164706, 0, 0.45098 )
 
-[sub_resource type="ArrayMesh" id=32]
+[sub_resource type="ArrayMesh" id=20]
 surfaces/0 = {
 "aabb": AABB( -0.5, 0, -0.5, 1, 1.00001, 1.00001 ),
 "array_data": PoolByteArray( 0, 0, 0, 191, 0, 0, 128, 63, 0, 0, 0, 63, 129, 0, 0, 0, 0, 127, 0, 127, 0, 57, 0, 60, 0, 0, 0, 191, 0, 0, 0, 0, 0, 0, 0, 191, 129, 0, 0, 0, 0, 127, 0, 127, 0, 54, 0, 58, 0, 0, 0, 191, 0, 0, 0, 0, 0, 0, 0, 63, 129, 0, 0, 0, 0, 127, 0, 127, 0, 54, 0, 60, 0, 0, 0, 191, 0, 0, 128, 63, 0, 0, 0, 191, 0, 0, 129, 0, 0, 127, 0, 127, 0, 57, 0, 58, 0, 0, 0, 63, 0, 0, 0, 0, 0, 0, 0, 191, 0, 0, 129, 0, 0, 127, 0, 127, 0, 54, 0, 56, 0, 0, 0, 191, 0, 0, 0, 0, 0, 0, 0, 191, 0, 0, 129, 0, 0, 127, 0, 127, 0, 54, 0, 58, 0, 0, 0, 63, 0, 0, 128, 63, 0, 0, 0, 191, 127, 0, 0, 0, 0, 127, 0, 127, 0, 57, 0, 56, 0, 0, 0, 63, 0, 0, 0, 0, 0, 0, 0, 63, 127, 0, 0, 0, 0, 127, 0, 127, 0, 54, 0, 52, 0, 0, 0, 63, 0, 0, 0, 0, 0, 0, 0, 191, 127, 0, 0, 0, 0, 127, 0, 127, 0, 54, 0, 56, 0, 0, 0, 63, 0, 0, 128, 63, 0, 0, 0, 63, 0, 0, 127, 0, 0, 127, 0, 127, 0, 57, 0, 52, 0, 0, 0, 191, 0, 0, 0, 0, 0, 0, 0, 63, 0, 0, 127, 0, 0, 127, 0, 127, 0, 54, 0, 0, 0, 0, 0, 63, 0, 0, 0, 0, 0, 0, 0, 63, 0, 0, 127, 0, 0, 127, 0, 127, 0, 54, 0, 52, 0, 0, 0, 63, 0, 0, 0, 0, 0, 0, 0, 191, 0, 129, 0, 0, 127, 0, 0, 127, 0, 54, 0, 56, 0, 0, 0, 191, 0, 0, 0, 0, 0, 0, 0, 63, 0, 129, 0, 0, 127, 0, 0, 127, 0, 48, 0, 52, 0, 0, 0, 191, 0, 0, 0, 0, 0, 0, 0, 191, 0, 129, 0, 0, 127, 0, 0, 127, 0, 48, 0, 56, 0, 0, 0, 191, 0, 0, 128, 63, 0, 0, 0, 191, 0, 127, 0, 0, 129, 0, 0, 127, 0, 59, 0, 56, 0, 0, 0, 63, 0, 0, 128, 63, 0, 0, 0, 63, 0, 127, 0, 0, 129, 0, 0, 127, 0, 57, 0, 52, 0, 0, 0, 63, 0, 0, 128, 63, 0, 0, 0, 191, 0, 127, 0, 0, 129, 0, 0, 127, 0, 57, 0, 56, 0, 0, 0, 191, 0, 0, 128, 63, 0, 0, 0, 191, 129, 0, 0, 0, 0, 127, 0, 127, 0, 57, 0, 58, 0, 0, 0, 63, 0, 0, 128, 63, 0, 0, 0, 191, 0, 0, 129, 0, 0, 127, 0, 127, 0, 57, 0, 56, 0, 0, 0, 63, 0, 0, 128, 63, 0, 0, 0, 63, 127, 0, 0, 0, 0, 127, 0, 127, 0, 57, 0, 52, 0, 0, 0, 191, 0, 0, 128, 63, 0, 0, 0, 63, 0, 0, 127, 0, 0, 127, 0, 127, 0, 57, 0, 0, 0, 0, 0, 63, 0, 0, 0, 0, 0, 0, 0, 63, 0, 129, 0, 0, 127, 0, 0, 127, 0, 54, 0, 52, 0, 0, 0, 191, 0, 0, 128, 63, 0, 0, 0, 63, 0, 127, 0, 0, 129, 0, 0, 127, 0, 59, 0, 52 ),
@@ -128,13 +128,13 @@ surfaces/0 = {
 "blend_shape_data": [  ],
 "format": 97559,
 "index_count": 36,
-"material": SubResource( 31 ),
+"material": SubResource( 19 ),
 "primitive": 4,
 "skeleton_aabb": [  ],
 "vertex_count": 24
 }
 
-[sub_resource type="Shader" id=19]
+[sub_resource type="Shader" id=21]
 code = "shader_type spatial;
 
 uniform float val = 0.5;
@@ -158,15 +158,15 @@ void fragment()
 	ALPHA = m;
 }"
 
-[sub_resource type="ShaderMaterial" id=20]
+[sub_resource type="ShaderMaterial" id=22]
 render_priority = 100
-shader = SubResource( 19 )
+shader = SubResource( 21 )
 shader_param/val = -1.158
 shader_param/x1 = -0.794
 shader_param/x2 = 1.0
 
-[sub_resource type="PlaneMesh" id=21]
-material = SubResource( 20 )
+[sub_resource type="PlaneMesh" id=23]
+material = SubResource( 22 )
 size = Vector2( 1, 1 )
 
 [node name="TileMap3D" type="Spatial"]
@@ -196,11 +196,11 @@ material/0 = null
 
 [node name="water" type="MeshInstance" parent="."]
 transform = Transform( 1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, -0.05, 0 )
-mesh = SubResource( 25 )
+mesh = SubResource( 7 )
 material/0 = null
 
 [node name="Particles" type="Particles" parent="water"]
-transform = Transform( 1, 0, 0, 0, 1, 1.1921e-07, 0, -1.1921e-07, 1, 0.0430784, 0.011385, 0.157868 )
+transform = Transform( 1, 0, 0, 0, 1, 1.1921e-07, 0, -1.1921e-07, 1, 0, 0, 0 )
 cast_shadow = 0
 amount = 20
 lifetime = 0.2
@@ -214,17 +214,17 @@ script = ExtResource( 10 )
 auto_add_remove_objects = false
 
 [node name="Tiles" type="Spatial" parent="Nav"]
-script = SubResource( 22 )
-serialized_navmesh_data = PoolByteArray( 84, 69, 83, 77, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 205, 204, 76, 63, 205, 204, 76, 63, 1, 0, 0, 0, 0, 0, 64, 0 )
+script = SubResource( 11 )
+serialized_navmesh_data = PoolByteArray( 84, 69, 83, 77, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 205, 204, 204, 64, 205, 204, 204, 64, 1, 0, 0, 0, 0, 0, 64, 0 )
 debug_mesh_color = Color( 1, 0.101961, 0.101961, 0.647059 )
-parameters = SubResource( 23 )
+parameters = SubResource( 12 )
 debug_mesh = SubResource( 24 )
 
 [node name="Cam" type="MeshInstance" parent="."]
 pause_mode = 1
 transform = Transform( 0.707107, -0.5, 0.5, 0, 0.707107, 0.707107, -0.707107, -0.5, 0.5, 0, 0, 0 )
-mesh = SubResource( 26 )
-material/0 = SubResource( 27 )
+mesh = SubResource( 14 )
+material/0 = SubResource( 15 )
 script = ExtResource( 6 )
 __meta__ = {
 "_vol_id": 3
@@ -252,17 +252,17 @@ collision_layer = 2
 collision_mask = 2
 
 [node name="Coll" type="CollisionShape" parent="Plane"]
-shape = SubResource( 28 )
+shape = SubResource( 16 )
 
 [node name="Plane" type="MeshInstance" parent="Plane"]
-mesh = SubResource( 29 )
-material/0 = SubResource( 30 )
+mesh = SubResource( 17 )
+material/0 = SubResource( 18 )
 __meta__ = {
 "_vol_id": 5
 }
 
 [node name="TileIndecator" type="MeshInstance" parent="."]
-mesh = SubResource( 32 )
+mesh = SubResource( 20 )
 material/0 = null
 __meta__ = {
 "_vol_id": 6
@@ -270,5 +270,5 @@ __meta__ = {
 
 [node name="MeshInstance" type="MeshInstance" parent="."]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -1, 0, 0 )
-mesh = SubResource( 21 )
+mesh = SubResource( 23 )
 material/0 = null

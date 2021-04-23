@@ -3,7 +3,7 @@ const GAME_MODE = 0
 const EDIT_MODE = 1
 
 var shift_pr = false
-var mode = GAME_MODE
+var mode = EDIT_MODE
 onready var tilemap : Spatial
 onready var camera : MeshInstance
 
@@ -16,7 +16,6 @@ func _input(event: InputEvent) -> void:
 			shift_pr = true
 		if Input.is_action_just_released('shift'):
 			shift_pr = false
-			print('hi')
 		if Input.is_action_just_pressed('export'):
 			tilemap.update_navmesh()
 		if Input.is_action_just_pressed('save'):

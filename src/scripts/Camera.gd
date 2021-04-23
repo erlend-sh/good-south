@@ -95,10 +95,9 @@ func _input(event: InputEvent) -> void:
 		if event is InputEventMouseButton:
 			if event.button_index == BUTTON_LEFT && (can_draw && !is_erase):
 				if event.is_pressed():
-					if tilemap.tile_ind.visible:
-						if !is_rot && !is_pan :
-							is_draw = true
-							tilemap._on_left_pressed()
+					if can_draw && (!is_rot && !is_pan):
+						is_draw = true
+						tilemap._on_left_pressed()
 				else:
 					if is_draw:
 						is_draw = false
@@ -106,8 +105,7 @@ func _input(event: InputEvent) -> void:
 
 			if event.button_index == BUTTON_RIGHT && (can_draw && !is_draw):
 				if event.is_pressed():
-					if tilemap.tile_ind.visible:
-						if !is_rot && !is_pan:
+					if can_draw && (!is_rot && !is_pan):
 							is_erase = true
 							tilemap._on_right_pressed()
 				else:

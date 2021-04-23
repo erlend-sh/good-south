@@ -22,7 +22,7 @@ func _physics_process(delta: float):
 	if !_rot.is_equal_approx(rotation_degrees):
 		rotation_degrees.y += (_rot.y - rotation_degrees.y) * rot_spd
 		rotation_degrees.x += (_rot.x - rotation_degrees.x) * rot_spd
-	#END
+#END
 
 func get_input_axis() -> Vector2:
 	var _axis = Vector2.ZERO
@@ -31,3 +31,4 @@ func get_input_axis() -> Vector2:
 	if _axis.length() > 1:
 		_axis = _axis.normalized()
 	return _axis
+#END

@@ -12,10 +12,10 @@ const TILE_IND    := 2
 const TILE_ROT    := 3
 const TILE_NEIGHS := 4
 
-const CORNER      := 0
-const EDGE        := 1
-const MIDDLE      := 2
-const SOLO        := 3
+const SOLO        := 0
+const CORNER      := 1
+const EDGE        := 2
+const MIDDLE      := 3
 const SOLO_EDGE   := 4
 const SOLO_MIDDLE := 5
 
@@ -45,9 +45,6 @@ var grid_col      := Color(1, 1, 1, 0.2)
 var cur_ind_pos   := Vector3.ZERO
 var last_ind_pos  := Vector3.ZERO
 var mouse_out     := false
-var has_backup    := false
-var tileset       := {}
-var tiles_backup  := {}
 var tiles         := {}
 var cur_tile_name := ''
 var cur_layer     := 0
@@ -77,10 +74,15 @@ func import_tiles(_scene : Spatial):
 		if _child.get_index() == 0:
 			cur_tile_name = _child.name
 		if _child.get_child_count() > 0:
-			var _node := []
-			for _sub in _child.get_children():
-				_node.append(_sub.duplicate())
-			tiles[_child.name] = _node
+			if _child.get_child_count() == 1:
+				var _node := []
+				_node.append(get_child(0).duplicate())
+				tiles[_child.name] = _node
+			else:
+				var _node := []
+				for _sub in _child.get_children():
+					_node.append(_sub.duplicate())
+				tiles[_child.name] = _node
 	_scene.queue_free()
 #END
 
@@ -98,6 +100,8 @@ func save_tilemap():
 # loads tilemap on start for testing!
 func load_tilemap():
 	var file = File.new()
+	if !file.file_exists('res://tilemap_save_test/test1.dat'):
+		return
 	file.open('res://tilemap_save_test/test1.dat', File.READ)
 	var _layers = file.get_var()
 	file.close()
@@ -185,6 +189,8 @@ func update_ind(_layer := cur_layer) -> void:
 	tile_ind.scale.y = 1.0
 	tile_ind.rotation_degrees.y = _data[TILE_ROT]
 	_data[TILE_NODE].free()
+	if !tile_ind.visible:
+		tile_ind.show()
 #END
 
 # [ 'mesh_instance_node', 'tileset_name', 'tile_name'  'tile_rot', Neighbors]
@@ -208,8 +214,8 @@ func draw_tile(_tile_pos : Vector3, _layer := cur_layer, _tile_name := cur_tile_
 	var _data = get_tile_data(get_neighs(_tile_pos, _layer, _tile_name, inc_ind), _tile_name)
 	tiles_node.add_child(_data[TILE_NODE])
 	_data[TILE_NODE].set_owner(tiles_node)
-	_data[TILE_NODE].get_child(0).set_owner(tiles_node)
-	_data[TILE_NODE].get_child(0).get_child(0).set_owner(tiles_node)
+	# _data[TILE_NODE].get_child(0).set_owner(tiles_node)
+	# _data[TILE_NODE].get_child(0).get_child(0).set_owner(tiles_node)
 	_data[TILE_NODE].name = str(_tile_pos)
 	_data[TILE_NODE].translation = get_tile_pos(_tile_pos)
 	_data[TILE_NODE].rotation_degrees.y = _data[TILE_ROT]
@@ -250,7 +256,7 @@ func update_tile(_tile_pos : Vector3, _tile_name := cur_tile_name):
 	_tiles[_tile_pos][TILE_ROT] = _data[TILE_ROT]
 	_tiles[_tile_pos][TILE_IND] = _data[TILE_IND]
 	_tiles[_tile_pos][TILE_NEIGHS] = _neighs
-	_tiles[_tile_pos][TILE_NODE].get_child(0).get_child(0).shape = _data[TILE_NODE].get_child(0).get_child(0).shape
+	# _tiles[_tile_pos][TILE_NODE].get_child(0).get_child(0).shape = _data[TILE_NODE].get_child(0).get_child(0).shape
 	_data[TILE_NODE].free()
 #END
 
@@ -323,6 +329,9 @@ func get_tile_pos(_tile : Vector3) -> Vector3:
 # get_neighs(_pos, _layer, _tileset_name, include_ind?) -> [false, false, false, false]
 func get_neighs(_tile_pos : Vector3, _layer := cur_layer,_tile_name := cur_tile_name, include_ind := false) -> Array:
 	var _neighs = [false, false, false, false]
+	if tiles[cur_tile_name].size() == 1:
+		print('one_role')
+		return _neighs
 	var _tiles = get_tiles(_layer)
 	for i in 4:
 		var _neigh = _tile_pos + _dirs[i]
@@ -469,7 +478,7 @@ func _on_left_pressed():
 #END
 
 func _on_left_released():
-	tile_ind.show()
+	update_ind()
 #END
 
 func _on_right_pressed():
@@ -484,10 +493,10 @@ func _on_right_released():
 
 func ray_is_colliding():
 	tile_label.text = 'Tile %s' % cam.tile_pos
-	if !tile_ind.visible:	
-		tile_ind.show()
-		tile_ind.translation = get_tile_pos(cam.tile_pos)
+	tile_ind.translation = get_tile_pos(cam.tile_pos)
+	if !tile_ind.visible:
 		cam.last_pos = cam.tile_pos
+		tile_ind.show()
 #END
 
 func ray_not_colliding():
