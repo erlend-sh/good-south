@@ -1,0 +1,43 @@
+[gd_scene load_steps=4 format=2]
+
+[ext_resource path="res://Unit.tscn" type="PackedScene" id=1]
+[ext_resource path="res://src/scripts/UnitGroup.gd" type="Script" id=2]
+
+[sub_resource type="BoxShape" id=1]
+
+[node name="UnitGroup" type="Spatial"]
+script = ExtResource( 2 )
+
+[node name="Area" type="Area" parent="."]
+
+[node name="CollisionShape" type="CollisionShape" parent="Area"]
+transform = Transform( 1.902, 0, 0, 0, 2, 0, 0, 0, 1.775, 0, 0.20007, -0.483193 )
+shape = SubResource( 1 )
+
+[node name="Unit" parent="." instance=ExtResource( 1 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.5 )
+
+[node name="Unit2" parent="." instance=ExtResource( 1 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.5 )
+
+[node name="Unit3" parent="." instance=ExtResource( 1 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1.5 )
+
+[node name="Unit4" parent="." instance=ExtResource( 1 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 1.5, 0, -1.5 )
+
+[node name="Unit5" parent="." instance=ExtResource( 1 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 1.5, 0, -0.5 )
+
+[node name="Unit6" parent="." instance=ExtResource( 1 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 1.5, 0, 0.5 )
+
+[node name="Unit7" parent="." instance=ExtResource( 1 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -1.5, 0, 0.5 )
+
+[node name="Unit8" parent="." instance=ExtResource( 1 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -1.5, 0, -0.5 )
+
+[node name="Unit9" parent="." instance=ExtResource( 1 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -1.5, 0, -1.5 )
+[connection signal="input_event" from="Area" to="." method="_on_Area_input_event"]

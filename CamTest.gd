@@ -9,8 +9,8 @@ var rot_spd := 0.15
 func _physics_process(delta: float):
 	var axis = get_input_axis()
 	_pos -= ((transform.basis.z - transform.basis.y) * axis.y + transform.basis.x * axis.x) * pan_spd
-	_pos.x = clamp(_pos.x, -12, 12)
-	_pos.z = clamp(_pos.z, -12, 12)
+	_pos.x = clamp(_pos.x, -30, 30)
+	_pos.z = clamp(_pos.z, -30, 30)
 
 	if Input.is_action_just_pressed('q'):
 		_rot.y -= 90
